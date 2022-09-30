@@ -2,7 +2,7 @@ package presenter
 
 typealias ColorAwt = java.awt.Color
 
-class Palette(private val size: Int = 1000) {
+class Palette(private val size: Int = 255) {
     private val colors = IntArray(size){0x00421E0F}
 
     fun getColor(position: Int): Int {

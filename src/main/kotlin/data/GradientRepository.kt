@@ -1,11 +1,7 @@
 package data
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-
 class GradientRepository {
-    var gradients by mutableStateOf(mutableListOf<Pair<String, List<Int>>>())
+    var gradients = mutableListOf<Pair<String, List<Int>>>()
         private set
 
     init {

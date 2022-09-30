@@ -37,11 +37,11 @@ fun TextGradientButton(
         modifier = modifier
             .padding(vertical = 4.dp)
             .border(1.dp, MaterialTheme.colors.secondaryVariant, shape)
-            .fillMaxWidth()
+            //.fillMaxWidth()
             .clickable(onClick = onClick)
             .clip(shape)
             .background(brush = Brush.horizontalGradient(gradient))
-            .padding(4.dp)
+            .padding(vertical = 4.dp, horizontal = 32.dp)
     )
 }
 

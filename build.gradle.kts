@@ -19,6 +19,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation(compose.desktop.currentOs)
+    testImplementation("junit:junit:4.13.1")
 }
 
 tasks.test {

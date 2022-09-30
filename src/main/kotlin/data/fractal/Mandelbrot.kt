@@ -1,6 +1,6 @@
 package data.fractal
 
-private const val MAX_ITERATIONS = 1000
+private const val MAX_ITERATIONS = 255
 
 class Mandelbrot : Fractal {
 

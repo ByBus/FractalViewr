@@ -4,17 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef55a444-4d71-4270-b489-0dd71d78ac12" name="Changes" comment="initial">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/CanvasStateHolder.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/FractalManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/GradientRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/fractal/Fractal.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/fractal/Mandelbrot.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/presenter/Palette.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/presenter/ScreenMapper.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/TextGradientButton.kt" afterDir="false" />
+    <list default="true" id="578cae00-c7da-4580-9680-383e58182b45" name="Changes" comment="drag and scale">
+      <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/CanvasStateHolder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/CanvasStateHolder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/FractalManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/domain/FractalManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/GradientRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/GradientRepository.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,8 +29,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin Class" />
         <option value="Kotlin File" />
+        <option value="JUnit4 Test Class" />
       </list>
     </option>
   </component>
@@ -40,8 +40,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="2FSNBRtMwEVCIhe2CNL7ZAgowVr" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="2FUsI21KJBlOqSDVNFoejVJI3O5" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
@@ -49,29 +48,149 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "G:/Projects/Compose_Desktop/old/FractalViewr"
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit4",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4": ""
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="KotlinExtractInterfaceDialog.RECENT_KEYS">
-      <recent name="data.fractal" />
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
     </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="domain" />
+    </key>
+    <key name="KotlinExtractInterfaceDialog.RECENT_KEYS">
+      <recent name="presenter" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="presenter" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Kotlin.MainKt">
+    <configuration name="ScreenMapperTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;presenter.ScreenMapperTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="ScreenMapperTest.reMap0" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;presenter.ScreenMapperTest.reMap0&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="ScreenMapperTest.reMap1000" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;presenter.ScreenMapperTest.reMap1000&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="ScreenMapperTest.reMapWidth" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;presenter.ScreenMapperTest.reMapWidth&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="MainKt" />
+      <module name="FractalViewr.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Kotlin.MainKt" />
+        <item itemvalue="Gradle.ScreenMapperTest.reMapWidth" />
+        <item itemvalue="Gradle.ScreenMapperTest.reMap1000" />
+        <item itemvalue="Gradle.ScreenMapperTest.reMap0" />
+        <item itemvalue="Gradle.ScreenMapperTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ef55a444-4d71-4270-b489-0dd71d78ac12" name="Changes" comment="" />
-      <created>1664481393920</created>
+      <changelist id="578cae00-c7da-4580-9680-383e58182b45" name="Changes" comment="" />
+      <created>1664557916447</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1664481393920</updated>
+      <updated>1664557916447</updated>
     </task>
-    <task id="LOCAL-00001" summary="initial">
-      <created>1664481512441</created>
+    <task id="LOCAL-00001" summary="drag and scale">
+      <created>1664577428769</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1664481512441</updated>
+      <updated>1664577428769</updated>
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -88,7 +207,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="initial" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial" />
+    <MESSAGE value="drag and scale" />
+    <option name="LAST_COMMIT_MESSAGE" value="drag and scale" />
   </component>
 </project>

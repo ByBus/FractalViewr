@@ -2,24 +2,17 @@ package data
 
 import java.util.*
 
-class CanvasStateHolder(private val initial: State) {
-    //State(-1.5, 1.5, -2.0, 1.0)
-    private val states = ArrayDeque<State>(100)
+class CanvasStateHolder(private var initialState: CanvasState) {
+    //State( -2.0, 1.0, -1.5, 1.5)
+    private val states = ArrayDeque<CanvasState>(100)
 
-    class State(
-        val yMin: Double, // Y_min
-        val yMax: Double, // Y_max
-        val xMin: Double, // X_min
-        val xMax: Double  // X_max
-    )
-
-    fun state(): State {
+    fun state(): CanvasState {
         return with(states) {
-            if (isEmpty()) initial else poll()
+            if (isEmpty()) initialState else peek()
         }
     }
 
-    fun save(state: State) {
+    fun save(state: CanvasState) {
         states.push(state)
     }
 
