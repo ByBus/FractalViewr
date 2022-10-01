@@ -31,6 +31,7 @@ import data.GradientRepository
 import data.fractal.Mandelbrot
 import presenter.Palette
 import presenter.ScreenMapper
+import ui.AppIcon
 import ui.TextGradientButton
 
 private const val WIDTH = 1000
@@ -137,7 +138,9 @@ fun main() = application {
 
     Window(
         onCloseRequest = ::exitApplication,
-        state = WindowState(size = DpSize(1200.dp, Dp.Unspecified))
+        state = WindowState(size = DpSize(1200.dp, Dp.Unspecified)),
+        title = "FractalViewr",
+        icon = AppIcon()
     ) {
         App(fractalManager)
     }
