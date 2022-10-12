@@ -1,12 +1,10 @@
-// Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -17,22 +15,18 @@ import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowState
-import androidx.compose.ui.window.application
-import data.CanvasState
-import data.CanvasStateHolder
-import domain.FractalManager
-import data.GradientRepository
+import androidx.compose.ui.window.*
+import data.*
 import data.fractal.Mandelbrot
+import domain.FractalManager
 import presenter.Palette
 import presenter.ScreenMapper
-import ui.AppIcon
-import ui.TextGradientButton
+import ui.*
+import ui.style.FractalTheme
 
 private const val WIDTH = 1000
 private const val HEIGHT = 1000
@@ -41,7 +35,7 @@ private const val HEIGHT = 1000
 @Composable
 @Preview
 fun App(fractalManager: FractalManager) {
-    MaterialTheme {
+    FractalTheme {
         Row(modifier = Modifier) {
             Column {
                 val canvasImg = fractalManager.image
@@ -87,35 +81,39 @@ fun App(fractalManager: FractalManager) {
                     fractalManager.computePreview()
                 }
             }
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "37 / 142",
-                        color = Color.Blue,
-                        fontSize = 25.sp
+            Column(modifier = Modifier) {
+                TopAppBar(
+                    backgroundColor = MaterialTheme.colors.background,
+                    modifier = Modifier) {
+                    BottomNavigationItem(
+                        icon = { Icon(painter = UndoIcon(), contentDescription = null, modifier = Modifier.size(32.dp)) },
+                        label = {Text("Undo",  maxLines = 1,
+                            overflow = TextOverflow.Ellipsis)},
+                        selected = false,
+                        onClick = {}
                     )
-                    Text(
-                        text = "B2",
-                        color = Color.Blue,
-                        fontSize = 25.sp
+                    BottomNavigationItem(
+                        icon = { Icon(painter = SaveIconOutlined(), contentDescription = null, modifier = Modifier.size(32.dp)) },
+                        label = {Text("Save",  maxLines = 1,
+                            overflow = TextOverflow.Ellipsis)},
+                        selected = false,
+                        onClick = {}
                     )
-                    Text(
-                        text = "B3",
-                        color = Color.Blue,
-                        fontSize = 25.sp
+                    BottomNavigationItem(
+                        icon = { Icon(painter = AddGradientIcon(), contentDescription = null, modifier = Modifier.size(32.dp)) },
+                        label = {Text("Create",  maxLines = 1,
+                            overflow = TextOverflow.Ellipsis)},
+                        selected = false,
+                        onClick = {}
                     )
                 }
                 LazyColumn(modifier = Modifier.padding(8.dp)) {
                     items(items = fractalManager.gradients) { gradient ->
                         TextGradientButton(
-                            text = gradient.first,
-                            gradient = gradient.second.map { Color(it) },
+                            text = gradient.name,
+                            gradient = gradient.colorStops.map { it.first to Color(it.second) },
                             onClick = {
-                                fractalManager.setGradient(gradient.second)
+                                fractalManager.setGradient(gradient.colorStops)
                                 fractalManager.computeImage()
                             },
                             modifier = Modifier.fillMaxWidth()
@@ -127,18 +125,23 @@ fun App(fractalManager: FractalManager) {
     }
 }
 
+
+
 fun main() = application {
     val fractalManager = FractalManager(
         Mandelbrot(),
         ScreenMapper(),
         CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5)),
-        Palette(),
-        GradientRepository()
+        Palette(interpolator = AwtColorInterpolator()),
+        GradientRepository(DefaultGradients())
     )
 
     Window(
         onCloseRequest = ::exitApplication,
-        state = WindowState(size = DpSize(1200.dp, Dp.Unspecified)),
+        state = WindowState(
+            size = DpSize(1280.dp, Dp.Unspecified),
+            position = WindowPosition.Aligned(Alignment.Center)
+        ),
         title = "FractalViewr",
         icon = AppIcon()
     ) {

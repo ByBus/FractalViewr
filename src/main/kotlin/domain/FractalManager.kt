@@ -27,7 +27,7 @@ class FractalManager(
     gradientRepository: GradientRepository
 ) {
     init {
-        setGradient(gradientRepository.gradients[0].second)
+        setGradient(gradientRepository.gradients[0].colorStops)
     }
 
     val gradients by mutableStateOf(gradientRepository.gradients)
@@ -85,8 +85,8 @@ class FractalManager(
         }
     }
 
-    fun setGradient(gradient: List<Int>) {
-        palette.setGradient(gradient.map { Color(it) })
+    fun setGradient(gradient: List<Pair<Float, Int>>) {
+        palette.setGradient(gradient.map { it.first to Color(it.second) })
     }
 
     fun saveCurrent() {
