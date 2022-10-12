@@ -24,9 +24,10 @@ class FractalManager(
     private val screenMapper: NumberRemaper<Int, Double>,
     private val canvasState: CanvasStateHolder,
     private val palette: Palette,
-    gradientRepository: GradientRepository
+    private val gradientRepository: GradientRepository
 ) {
     init {
+        println("INIT")
         setGradient(gradientRepository.gradients[0].colorStops)
     }
 
@@ -104,4 +105,5 @@ class FractalManager(
             shift(kX * deltaX0, kY * deltaY0)
         }
     }
+
 }

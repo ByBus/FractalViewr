@@ -4,44 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="578cae00-c7da-4580-9680-383e58182b45" name="Changes" comment="icon and title">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/AwtColorInterpolator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/DataSource.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/DefaultGradients.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/GradientData.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/GradientsSource.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/Interpolator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/domain/Gradient.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/Dialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/GradientCircle.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/Icons.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/style/FractalTheme.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/style/fonts/Typography.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/font/oswald/Oswald-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/font/oswald/Oswald-ExtraLight.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/font/oswald/Oswald-Light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/font/oswald/Oswald-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/font/oswald/Oswald-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/font/oswald/Oswald-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/paletteAdd_FILL0_wght400_GRAD0_opsz48.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/save_FILL_wght400_GRAD0_opsz48.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/save_OUTLINE_FILL0_wght400_GRAD0_opsz48.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/undo_FILL0_wght400_GRAD0_opsz48.svg" afterDir="false" />
+    <list default="true" id="578cae00-c7da-4580-9680-383e58182b45" name="Changes" comment="added toolbar and fonts. datasource for repository">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/App.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/GradientMakerDialog.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/ColorProducer.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/DrawMarker.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/GradientMaker.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/GradientSlider.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/controller/ColorPalette.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/controller/ColorPickerController.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/controller/CoordinateConverter.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/controller/GradientSliderController.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ui/gradientmaker/controller/MarkerState.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/DataSource.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/DataSource.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/GradientRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/GradientRepository.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/domain/FractalManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/domain/FractalManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/presenter/Palette.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/presenter/Palette.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/AppIcon.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/TextGradientButton.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/TextGradientButton.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/style/fonts/Typography.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/style/fonts/Typography.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,12 +44,18 @@
       <list>
         <option value="JUnit4 Test Class" />
         <option value="Kotlin Interface" />
+        <option value="Kotlin Enum" />
         <option value="Kotlin Class" />
         <option value="Kotlin File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -91,6 +83,9 @@
       <recent name="G:\Projects\Compose_Desktop\FractalViewr\src\main\resources\fonts\oswald" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="" />
+      <recent name="ui.gradientmaker" />
+      <recent name="ui.gradientmaker.controller" />
       <recent name="domain" />
     </key>
     <key name="KotlinExtractInterfaceDialog.RECENT_KEYS">
@@ -240,7 +235,14 @@
       <option name="project" value="LOCAL" />
       <updated>1664637731086</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="added toolbar and fonts. datasource for repository">
+      <created>1665595004558</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1665595004558</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -257,6 +259,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="drag and scale" />
     <MESSAGE value="icon and title" />
-    <option name="LAST_COMMIT_MESSAGE" value="icon and title" />
+    <MESSAGE value="added toolbar and fonts. datasource for repository" />
+    <option name="LAST_COMMIT_MESSAGE" value="added toolbar and fonts. datasource for repository" />
   </component>
 </project>

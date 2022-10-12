@@ -7,4 +7,5 @@ class GradientRepository(defaultGradients: DataSource<GradientData>) {
     init {
         gradients.addAll(defaultGradients.readAll())
     }
+
 }
