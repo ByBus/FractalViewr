@@ -130,6 +130,17 @@ private fun ToolBar(openDialog: MutableState<Boolean>) {
             onClick = {}
         )
         BottomNavigationItem(
+            icon = { Icon(painter = ResetIcon(), contentDescription = null, modifier = Modifier.size(32.dp)) },
+            label = {
+                Text(
+                    "Reset", maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            selected = false,
+            onClick = {}
+        )
+        BottomNavigationItem(
             icon = { Icon(painter = SaveIconOutlined(), contentDescription = null, modifier = Modifier.size(32.dp)) },
             label = {
                 Text(

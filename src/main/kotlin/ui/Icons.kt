@@ -16,3 +16,6 @@ fun AddGradientIcon() = painterResource("images/paletteAdd_FILL0_wght400_GRAD0_o
 
 @Composable
 fun UndoIcon() = painterResource("images/undo_FILL0_wght400_GRAD0_opsz48.svg")
+
+@Composable
+fun ResetIcon() = painterResource("images/device_reset_FILL0_wght400_GRAD0_opsz48.svg")
