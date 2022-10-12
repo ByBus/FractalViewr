@@ -12,6 +12,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
@@ -118,49 +119,28 @@ private fun ToolBar(openDialog: MutableState<Boolean>) {
         backgroundColor = MaterialTheme.colors.background,
         modifier = Modifier
     ) {
-        BottomNavigationItem(
-            icon = { Icon(painter = UndoIcon(), contentDescription = null, modifier = Modifier.size(32.dp)) },
-            label = {
-                Text(
-                    "Undo", maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            selected = false,
-            onClick = {}
-        )
-        BottomNavigationItem(
-            icon = { Icon(painter = ResetIcon(), contentDescription = null, modifier = Modifier.size(32.dp)) },
-            label = {
-                Text(
-                    "Reset", maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            selected = false,
-            onClick = {}
-        )
-        BottomNavigationItem(
-            icon = { Icon(painter = SaveIconOutlined(), contentDescription = null, modifier = Modifier.size(32.dp)) },
-            label = {
-                Text(
-                    "Save", maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            selected = false,
-            onClick = {}
-        )
-        BottomNavigationItem(
-            icon = { Icon(painter = AddGradientIcon(), contentDescription = null, modifier = Modifier.size(32.dp)) },
-            label = {
-                Text(
-                    "Create", maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            selected = false,
-            onClick = { openDialog.value = true }
-        )
+        ToolBarIconButton( UndoIcon(), "Undo") {}
+        ToolBarIconButton( ResetIcon(), "Reset") {}
+        ToolBarIconButton( SaveIconOutlined(), "Save") {}
+        ToolBarIconButton( AddGradientIcon(), "Create") { openDialog.value = true }
     }
+}
+
+@Composable
+private fun RowScope.ToolBarIconButton(
+    icon: Painter,
+    text: String,
+    action: () -> Unit
+) {
+    BottomNavigationItem(
+        icon = { Icon(painter = icon, contentDescription = null, modifier = Modifier.size(32.dp)) },
+        label = {
+            Text(
+                text, maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        selected = false,
+        onClick = action
+    )
 }
