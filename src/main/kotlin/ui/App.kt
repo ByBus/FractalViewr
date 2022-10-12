@@ -37,7 +37,9 @@ fun App(
         Row(modifier = Modifier) {
             FractalViewPort(fractalManager)
             val openDialog = remember { mutableStateOf(false) }
-            GradientMakerDialog(openDialog, colorPickerController, gradientSliderController)
+            GradientMakerDialog(openDialog, colorPickerController, gradientSliderController) {name, colors ->
+                fractalManager.saveGradient(name, colors)
+            }
             Column(modifier = Modifier) {
                 ToolBar(openDialog)
                 GradientButtons(fractalManager)

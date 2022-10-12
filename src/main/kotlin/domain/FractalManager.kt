@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import data.CanvasState
 import data.CanvasStateHolder
+import data.GradientData
 import data.GradientRepository
 import data.fractal.Fractal
 import presenter.NumberRemaper
@@ -31,7 +32,7 @@ class FractalManager(
         setGradient(gradientRepository.gradients[0].colorStops)
     }
 
-    val gradients by mutableStateOf(gradientRepository.gradients)
+    val gradients = gradientRepository.gradients
     var invalidator by mutableStateOf(0)
         private set
 
@@ -104,6 +105,10 @@ class FractalManager(
             val deltaY0 = screenMapper.reMap(kY * deltaY, 0, buffer.height, 0.0, height)
             shift(kX * deltaX0, kY * deltaY0)
         }
+    }
+
+    fun saveGradient(name: String, colors: List<Pair<Float, Int>>) {
+        gradientRepository.save(GradientData(name, colors))
     }
 
 }
