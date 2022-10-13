@@ -9,6 +9,7 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import data.*
 import data.fractal.Mandelbrot
+import domain.FractalFactory
 import domain.FractalManager
 import presenter.Palette
 import presenter.ScreenMapper
@@ -22,13 +23,12 @@ import ui.gradientmaker.controller.GradientSliderController
 fun main() = application {
     val fractalManager = remember {
         FractalManager(
-            Mandelbrot(),
             ScreenMapper(),
-            CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5)),
             Palette(interpolator = AwtColorInterpolator()),
             GradientRepository(DefaultGradients())
         )
     }
+    val fractalFactory = remember { FractalFactory(fractalManager) }
     val colorPickerController = remember { ColorPickerController(CoordinateConverter(), colorPalette = ColorPalette())}
     val gradientSliderController = remember { GradientSliderController() }
 

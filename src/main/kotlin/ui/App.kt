@@ -46,6 +46,9 @@ fun App(
             }
             Column(modifier = Modifier) {
                 ToolBar(openDialog, fractalManager)
+                DropdownMenuSelector(listOf("Mandelbrot", "Julia", "Sierpiński carpet"), label = "Fractal"){
+                    println("Selected id = $it")
+                }
                 GradientButtons(fractalManager)
             }
         }
@@ -73,7 +76,7 @@ private fun FractalViewPort(fractalManager: FractalManager) {
             detectDragGestures(
                 onDragStart = {
                     dragInitPosition = it
-                    fractalManager.saveCurrent()
+                    fractalManager.saveCurrentState()
                 },
                 onDrag = { change, _ ->
                     val dragDelta = dragInitPosition - change.position

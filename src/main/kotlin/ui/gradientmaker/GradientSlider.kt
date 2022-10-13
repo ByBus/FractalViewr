@@ -118,17 +118,9 @@ fun GradientSlider(
         for (gradientColor in gradientController.gradient()) {
             val markerSet = currentSelectedId == gradientColor.id
             when {
-                !markerSet && gradientColor.selected -> {
-                    currentSelectedId = gradientColor.id
-                }
-
-                markerSet && gradientColor.selected -> {
-                    selectedState = MarkerState.SELECTED
-                }
-
-                markerSet && !gradientColor.selected -> {
-                    selectedState = MarkerState.IDLE
-                }
+                !markerSet && gradientColor.selected -> currentSelectedId = gradientColor.id
+                markerSet && gradientColor.selected -> selectedState = MarkerState.SELECTED
+                markerSet && !gradientColor.selected -> selectedState = MarkerState.IDLE
             }
             val radius = if (markerSet) markerRadiusSelected else pickerRadiusMin
             val changeVerticalValue =

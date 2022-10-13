@@ -8,6 +8,7 @@ import data.CanvasStateHolder
 import data.GradientData
 import data.GradientRepository
 import data.fractal.Fractal
+import data.fractal.Mandelbrot
 import kotlinx.coroutines.*
 import presenter.NumberRemaper
 import presenter.Palette
@@ -22,14 +23,14 @@ private const val PREVIEW_HEIGHT = 200
 private const val SCROLL_STEP = 0.6
 
 class FractalManager(
-    private val fractal: Fractal,
     private val screenMapper: NumberRemaper<Int, Double>,
-    private val canvasState: CanvasStateHolder,
     private val palette: Palette,
     private val gradientRepository: GradientRepository
 ) {
+    private var fractal: Fractal = Mandelbrot()
+    private var canvasState: CanvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
     init {
-        println("INIT")
+        println("FractalManager INIT")
         setGradient(gradientRepository.gradients[0].colorStops)
     }
 
@@ -49,7 +50,7 @@ class FractalManager(
         val state = canvasState.state()
         val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
         val multiplier = if (value < 0) SCROLL_STEP else 1 / SCROLL_STEP
-        canvasState.save(state.scale(multiplier, x0, y0))
+        canvasState.save(state.scaledNear(multiplier, x0, y0))
     }
 
     val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -94,7 +95,7 @@ class FractalManager(
         palette.setGradient(gradient.map { it.first to Color(it.second) })
     }
 
-    fun saveCurrent() {
+    fun saveCurrentState() {
         with(canvasState) {
             save(state().copy())
         }
@@ -122,5 +123,10 @@ class FractalManager(
     fun reset() {
         canvasState.reset()
         computeImage()
+    }
+
+    fun setConfiguration(fractal: Fractal, state: CanvasState) {
+        this.fractal = fractal
+        this.canvasState = CanvasStateHolder(state)
     }
 }

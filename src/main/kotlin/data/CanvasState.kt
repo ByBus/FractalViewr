@@ -14,7 +14,7 @@ class CanvasState(
     val height: Double
         get() = abs(yMax - yMin)
 
-    fun scale(value: Double, x: Double, y: Double): CanvasState {
+    fun scaledNear(value: Double, x: Double, y: Double): CanvasState {
         val horizontalPart = width * value * 0.5
         val verticalPart = height * value * 0.5
         return CanvasState(x - horizontalPart, x + horizontalPart, y - verticalPart, y + verticalPart)
