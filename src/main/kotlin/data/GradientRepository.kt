@@ -11,6 +11,6 @@ class GradientRepository(defaultGradients: DataSource<GradientData>) {
     }
 
     fun save(gradientData: GradientData) {
-        gradients.add(gradientData)
+        gradients.add(0, gradientData)
     }
 }

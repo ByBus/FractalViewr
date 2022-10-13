@@ -1,7 +1,10 @@
 package ui
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,17 +35,17 @@ private const val HEIGHT = 1000
 fun App(
     fractalManager: FractalManager,
     colorPickerController: ColorPickerController,
-    gradientSliderController: GradientSliderController
+    gradientSliderController: GradientSliderController,
 ) {
     FractalTheme {
         Row(modifier = Modifier) {
             FractalViewPort(fractalManager)
             val openDialog = remember { mutableStateOf(false) }
-            GradientMakerDialog(openDialog, colorPickerController, gradientSliderController) {name, colors ->
+            GradientMakerDialog(openDialog, colorPickerController, gradientSliderController) { name, colors ->
                 fractalManager.saveGradient(name, colors)
             }
             Column(modifier = Modifier) {
-                ToolBar(openDialog)
+                ToolBar(openDialog, fractalManager)
                 GradientButtons(fractalManager)
             }
         }
@@ -60,9 +63,9 @@ private fun FractalViewPort(fractalManager: FractalManager) {
         .height(canvasImg.height.dp)
         .onPointerEvent(PointerEventType.Scroll) {
             with(it.changes.first()) {
-                invalidate--
                 fractalManager.setScroll(scrollDelta.y, position.x.toInt(), position.y.toInt())
                 fractalManager.computePreview()
+                invalidate--
                 fractalManager.computeImage()
             }
         }
@@ -96,33 +99,38 @@ private fun FractalViewPort(fractalManager: FractalManager) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun GradientButtons(fractalManager: FractalManager) {
     LazyColumn(modifier = Modifier.padding(8.dp)) {
-        items(items = fractalManager.gradients) { gradient ->
-            TextGradientButton(
-                text = gradient.name,
-                gradient = gradient.colorStops.map { it.first to Color(it.second) },
-                onClick = {
-                    fractalManager.setGradient(gradient.colorStops)
-                    fractalManager.computeImage()
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+        items(items = fractalManager.gradients, key = {it.id}
+        ) { gradient ->
+            Row(modifier = Modifier.animateItemPlacement(
+                spring(dampingRatio = Spring.DampingRatioMediumBouncy, Spring.StiffnessMedium))) {
+                TextGradientButton(
+                    text = gradient.name,
+                    gradient = gradient.colorStops.map { it.first to Color(it.second) },
+                    onClick = {
+                        fractalManager.setGradient(gradient.colorStops)
+                        fractalManager.computeImage()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun ToolBar(openDialog: MutableState<Boolean>) {
+private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalManager) {
     TopAppBar(
         backgroundColor = MaterialTheme.colors.background,
         modifier = Modifier
     ) {
-        ToolBarIconButton( UndoIcon(), "Undo") {}
-        ToolBarIconButton( ResetIcon(), "Reset") {}
-        ToolBarIconButton( SaveIconOutlined(), "Save") {}
-        ToolBarIconButton( AddGradientIcon(), "Create") { openDialog.value = true }
+        ToolBarIconButton(UndoIcon(), "Undo") { fractalManager.undo()}
+        ToolBarIconButton(ResetIcon(), "Reset") { fractalManager.reset()}
+        ToolBarIconButton(SaveIconOutlined(), "Save") {}
+        ToolBarIconButton(AddGradientIcon(), "Create") { openDialog.value = true }
     }
 }
 
@@ -130,7 +138,7 @@ private fun ToolBar(openDialog: MutableState<Boolean>) {
 private fun RowScope.ToolBarIconButton(
     icon: Painter,
     text: String,
-    action: () -> Unit
+    action: () -> Unit,
 ) {
     BottomNavigationItem(
         icon = { Icon(painter = icon, contentDescription = null, modifier = Modifier.size(32.dp)) },

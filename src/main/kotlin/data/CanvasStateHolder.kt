@@ -16,7 +16,11 @@ class CanvasStateHolder(private var initialState: CanvasState) {
         states.push(state)
     }
 
-    fun clear() {
-        states.clear()
+    fun reset() {
+        save(initialState)
+    }
+
+    fun restore() {
+        states.poll()
     }
 }

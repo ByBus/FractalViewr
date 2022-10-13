@@ -8,6 +8,7 @@ import data.CanvasStateHolder
 import data.GradientData
 import data.GradientRepository
 import data.fractal.Fractal
+import kotlinx.coroutines.*
 import presenter.NumberRemaper
 import presenter.Palette
 import java.awt.Color
@@ -51,24 +52,26 @@ class FractalManager(
         canvasState.save(state.scale(multiplier, x0, y0))
     }
 
+    val coroutineScope = CoroutineScope(Dispatchers.Default)
     fun computePreview() {
-        compute(previewBuffer)
-        with(image) {
-            data = previewBuffer.upscale(width, height).data
-        }
-    }
-
-    private fun compute(image: BufferedImage) {
-        val state = canvasState.state()
-        for (y in 0 until image.height) {
-            for (x in 0 until image.width) {
-                val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
-                val value = fractal.calculate(x0, y0)
-                val color = palette.getColor(value)
-                image.setRGB(x, y, color)
-                invalidator++
+        coroutineScope.launch {
+            compute(previewBuffer)
+            with(image) {
+                data = previewBuffer.upscale(width, height).data
             }
         }
+    }
+    private fun compute(image: BufferedImage) {
+           val state = canvasState.state()
+           for (y in 0 until image.height) {
+               for (x in 0 until image.width) {
+                   val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
+                   val value = fractal.calculate(x0, y0)
+                   val color = palette.getColor(value)
+                   image.setRGB(x, y, color)
+                   invalidator++
+               }
+           }
     }
 
     private fun mapToCanvas(x: Int, y: Int, width: Int, height: Int, state: CanvasState): Pair<Double, Double> {
@@ -111,4 +114,13 @@ class FractalManager(
         gradientRepository.save(GradientData(name, colors))
     }
 
+    fun undo() {
+        canvasState.restore()
+        computeImage()
+    }
+
+    fun reset() {
+        canvasState.reset()
+        computeImage()
+    }
 }

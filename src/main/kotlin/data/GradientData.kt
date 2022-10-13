@@ -1,3 +1,5 @@
 package data
 
-class GradientData(val name: String, val colorStops: List<Pair<Float, Int>>)
+import java.util.UUID
+
+class GradientData(val name: String, val colorStops: List<Pair<Float, Int>>, val id: Long = UUID.randomUUID().mostSignificantBits, )

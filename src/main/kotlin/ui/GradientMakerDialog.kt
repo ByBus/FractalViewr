@@ -18,7 +18,7 @@ fun GradientMakerDialog(
     openDialog: MutableState<Boolean>,
     colorPickerController: ColorPickerController,
     gradientSliderController: GradientSliderController,
-    onConfirm: (String, List<Pair<Float, Int>>) -> Unit = { _, _ -> }
+    onConfirm: (String, List<Pair<Float, Int>>) -> Unit = { _, _ -> },
 ) {
     if (openDialog.value) {
         gradientSliderController.reset()
@@ -34,7 +34,7 @@ fun GradientMakerDialog(
                     TextField(
                         value = gradientName,
                         onValueChange = { gradientName = it; showError = it.isBlank() },
-                        label = { if(showError.not()) Text("Gradient name") else Text("Please type gradient name") },
+                        label = { if (showError.not()) Text("Gradient name") else Text("Please type gradient name") },
                         trailingIcon = {
                             if (showError)
                                 Icon(Icons.Filled.Info, "Please type gradient name", tint = MaterialTheme.colors.error)
@@ -58,10 +58,7 @@ fun GradientMakerDialog(
                 }
             },
             dismissButton = {
-                Button(
-                    onClick = {
-                        openDialog.value = false
-                    }) {
+                Button(onClick = { openDialog.value = false }) {
                     Text("Cancel")
                 }
             }
