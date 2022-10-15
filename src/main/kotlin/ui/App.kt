@@ -1,5 +1,6 @@
 package ui
 
+import Localization
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -46,7 +47,7 @@ fun App(
             }
             Column(modifier = Modifier) {
                 ToolBar(openDialog, fractalManager)
-                DropdownMenuSelector(listOf("Mandelbrot", "Julia", "Sierpiński carpet"), label = "Fractal"){
+                DropdownMenuSelector(listOf("Mandelbrot", "Julia", "Sierpiński carpet"), label = Localization.fractalSelectorTitle){
                     println("Selected id = $it")
                 }
                 GradientButtons(fractalManager)
@@ -131,14 +132,14 @@ private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalMa
         backgroundColor = MaterialTheme.colors.background,
         modifier = Modifier
     ) {
-        ToolBarIconButton(UndoIcon(), "Undo") { fractalManager.undo()}
-        ToolBarIconButton(ResetIcon(), "Reset") { fractalManager.reset()}
-        ToolBarIconButton(SaveIconOutlined(), "Save") { showFileSaveDialog = true }
-        ToolBarIconButton(AddGradientIcon(), "Create") { openDialog.value = true }
+        ToolBarIconButton(UndoIcon(), Localization.undo) { fractalManager.undo()}
+        ToolBarIconButton(ResetIcon(), Localization.reset) { fractalManager.reset()}
+        ToolBarIconButton(SaveIconOutlined(), Localization.save) { showFileSaveDialog = true }
+        ToolBarIconButton(AddGradientIcon(), Localization.create) { openDialog.value = true }
     }
     if (showFileSaveDialog) {
         FileSaveDialog(
-            title = "Select file or type filename",
+            title = Localization.fileSaveDialogTitle,
             onResult = {
                 it?.let {
                     fractalManager.saveImage(it)

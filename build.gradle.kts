@@ -20,6 +20,10 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation(compose.desktop.currentOs)
     testImplementation("junit:junit:4.13.1")
+
+    // Koin
+    implementation("io.insert-koin:koin-core:3.2.2")
+    testImplementation ("io.insert-koin:koin-test:3.2.2")
 }
 
 tasks.test {

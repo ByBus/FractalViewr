@@ -1,5 +1,6 @@
 package ui
 
+import Localization
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -27,17 +28,17 @@ fun GradientMakerDialog(
         AlertDialog(
             onDismissRequest = {},
             title = {
-                Text(text = "Create gradient".uppercase(), style = MaterialTheme.typography.h6)
+                Text(text = Localization.gradientMakerTitle.uppercase(), style = MaterialTheme.typography.h6)
             },
             text = {
                 Column(modifier = Modifier.width(350.dp)) {
                     TextField(
                         value = gradientName,
                         onValueChange = { gradientName = it; showError = it.isBlank() },
-                        label = { if (showError.not()) Text("Gradient name") else Text("Please type gradient name") },
+                        label = { if (showError.not()) Text(Localization.gradientHint) else Text(Localization.gradientHintError) },
                         trailingIcon = {
                             if (showError)
-                                Icon(Icons.Filled.Info, "Please type gradient name", tint = MaterialTheme.colors.error)
+                                Icon(Icons.Filled.Info, Localization.gradientHintError, tint = MaterialTheme.colors.error)
                         },
                         singleLine = true,
                         isError = showError,
@@ -54,12 +55,12 @@ fun GradientMakerDialog(
                             openDialog.value = false
                         }
                     }) {
-                    Text("OK")
+                    Text(Localization.ok)
                 }
             },
             dismissButton = {
                 Button(onClick = { openDialog.value = false }) {
-                    Text("Cancel")
+                    Text(Localization.cancel)
                 }
             }
         )
