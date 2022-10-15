@@ -5,14 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import data.*
 import data.fractal.Mandelbrot
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import presenter.Palette
 import presenter.RangeRemapper
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.File
-import javax.imageio.ImageIO
 
 
 private const val WIDTH = 1000
@@ -27,6 +28,7 @@ class FractalManager(
     private val screenMapper: RangeRemapper<Int, Double>,
     private val palette: Palette,
     private val gradientRepository: GradientRepository,
+    private val imageFileSaver: FileSaver<BufferedImage>
 ) {
     private var fractal: Fractal = Mandelbrot()
     private var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
@@ -145,9 +147,6 @@ class FractalManager(
     }
 
     fun saveImage(file: File) {
-        val format = "png"
-        val name = file.name.substringBeforeLast(".")
-        val fileWithExt = File(file.parent, "$name.$format")
-        ImageIO.write(buffer, format, fileWithExt)
+        imageFileSaver.save(buffer, file)
     }
 }

@@ -7,10 +7,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import data.*
-import data.fractal.Mandelbrot
+import data.AwtColorInterpolator
+import data.DefaultGradients
+import data.GradientRepository
 import domain.FractalFactory
 import domain.FractalManager
+import domain.ImageSaver
 import presenter.Palette
 import presenter.ScreenMapper
 import ui.App
@@ -25,7 +27,8 @@ fun main() = application {
         FractalManager(
             ScreenMapper(),
             Palette(interpolator = AwtColorInterpolator()),
-            GradientRepository(DefaultGradients())
+            GradientRepository(DefaultGradients()),
+            ImageSaver()
         )
     }
     val fractalFactory = remember { FractalFactory(fractalManager) }

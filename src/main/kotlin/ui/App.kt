@@ -137,8 +137,9 @@ private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalMa
         ToolBarIconButton(AddGradientIcon(), "Create") { openDialog.value = true }
     }
     if (showFileSaveDialog) {
-        FileDialog(
-            onCloseRequest = {
+        FileSaveDialog(
+            title = "Select file or type filename",
+            onResult = {
                 it?.let {
                     fractalManager.saveImage(it)
                 }
