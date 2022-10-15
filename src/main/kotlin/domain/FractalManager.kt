@@ -6,11 +6,14 @@ import androidx.compose.runtime.setValue
 import data.*
 import data.fractal.Mandelbrot
 import kotlinx.coroutines.*
-import presenter.RangeRemapper
 import presenter.Palette
+import presenter.RangeRemapper
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
+
 
 private const val WIDTH = 1000
 private const val HEIGHT = 1000
@@ -139,5 +142,12 @@ class FractalManager(
     fun setConfiguration(fractal: Fractal, state: CanvasState) {
         this.fractal = fractal
         this.canvasStateHolder = CanvasStateHolder(state)
+    }
+
+    fun saveImage(file: File) {
+        val format = "png"
+        val name = file.name.substringBeforeLast(".")
+        val fileWithExt = File(file.parent, "$name.$format")
+        ImageIO.write(buffer, format, fileWithExt)
     }
 }

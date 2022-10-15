@@ -126,14 +126,25 @@ private fun GradientButtons(fractalManager: FractalManager) {
 
 @Composable
 private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalManager) {
+    var showFileSaveDialog by remember { mutableStateOf(false) }
     TopAppBar(
         backgroundColor = MaterialTheme.colors.background,
         modifier = Modifier
     ) {
         ToolBarIconButton(UndoIcon(), "Undo") { fractalManager.undo()}
         ToolBarIconButton(ResetIcon(), "Reset") { fractalManager.reset()}
-        ToolBarIconButton(SaveIconOutlined(), "Save") {}
+        ToolBarIconButton(SaveIconOutlined(), "Save") { showFileSaveDialog = true }
         ToolBarIconButton(AddGradientIcon(), "Create") { openDialog.value = true }
+    }
+    if (showFileSaveDialog) {
+        FileDialog(
+            onCloseRequest = {
+                it?.let {
+                    fractalManager.saveImage(it)
+                }
+                showFileSaveDialog = false
+            }
+        )
     }
 }
 
