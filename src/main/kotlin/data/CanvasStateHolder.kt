@@ -2,25 +2,23 @@ package data
 
 import java.util.*
 
-class CanvasStateHolder(private var initialState: CanvasState) {
-    //State( -2.0, 1.0, -1.5, 1.5)
-    private val states = ArrayDeque<CanvasState>(100)
+class CanvasStateHolder (private var initialState: FractalSpaceState<Double>) {
+    private val states = ArrayDeque<FractalSpaceState<Double>>(100)
 
-    fun state(): CanvasState {
+    fun state(): FractalSpaceState<Double> {
         return with(states) {
             if (isEmpty()) initialState else peek()
         }
     }
 
-    fun save(state: CanvasState) {
+    fun save(state: FractalSpaceState<Double>) {
         states.push(state)
     }
-
     fun reset() {
         save(initialState)
     }
 
-    fun restore() {
+    fun removeLast() {
         states.poll()
     }
 }

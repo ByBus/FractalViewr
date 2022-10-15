@@ -3,29 +3,37 @@ package data
 import kotlin.math.abs
 
 class CanvasState(
-    var xMin: Double, // X_min
-    var xMax: Double, // X_max
-    var yMin: Double, // Y_min
-    var yMax: Double, // Y_max
-) {
-    val width: Double
+    private var xMin: Double, // X_min
+    private var xMax: Double, // X_max
+    private var yMin: Double, // Y_min
+    private var yMax: Double, // Y_max
+    private val zoomStep: Double = 0.6,
+) : FractalSpaceState<Double> {
+    private val width: Double
         get() = abs(xMax - xMin)
 
-    val height: Double
+    private val height: Double
         get() = abs(yMax - yMin)
 
-    fun scaledNear(value: Double, x: Double, y: Double): CanvasState {
-        val horizontalPart = width * value * 0.5
-        val verticalPart = height * value * 0.5
-        return CanvasState(x - horizontalPart, x + horizontalPart, y - verticalPart, y + verticalPart)
+    override fun scaledNear(direction: Float, x: Double, y: Double): CanvasState {
+        val multiplier = if (direction < 0) zoomStep else 1 / zoomStep
+        val horizontalPart = width * multiplier * 0.5
+        val verticalPart = height * multiplier * 0.5
+        return CanvasState(x - horizontalPart, x + horizontalPart, y - verticalPart, y + verticalPart, zoomStep)
     }
 
-    fun copy(): CanvasState = CanvasState(xMin, xMax, yMin, yMax)
+    override fun copy(): CanvasState = CanvasState(xMin, xMax, yMin, yMax, zoomStep)
 
-    fun shift(deltaX: Double, deltaY: Double) {
+    override fun shift(deltaX: Double, deltaY: Double) {
         xMin += deltaX
         xMax += deltaX
         yMin += deltaY
         yMax += deltaY
     }
+
+    override fun <R> mapAxis(mapper: (Double, Double) -> R, xAxis: Boolean): R {
+        return if (xAxis) mapper.invoke(xMin, xMax) else mapper.invoke(yMin, yMax)
+    }
+
+    override fun <R> mapSize(mapper: (Double, Double) -> R): R = mapper.invoke(width, height)
 }

@@ -1,5 +1,7 @@
 package data.fractal
 
+import domain.Fractal
+
 private const val MAX_ITERATIONS = 255
 
 class Mandelbrot : Fractal {

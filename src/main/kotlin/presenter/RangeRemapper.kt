@@ -1,6 +1,6 @@
 package presenter
 
-interface NumberRemaper<T: Number, R: Number> {
+interface RangeRemapper<T: Number, R: Number> {
     fun reMap(
         value: T,
         fromStart: T,
