@@ -1,6 +1,6 @@
 package presenter
 
-class ScreenMapper: RangeRemapper<Int, Double> {
+class IntDoubleReMapper: RangeRemapper<Int, Double> {
     override fun reMap(
         value: Int,
         fromStart: Int,

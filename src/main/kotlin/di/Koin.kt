@@ -10,7 +10,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import presenter.Palette
 import presenter.RangeRemapper
-import presenter.ScreenMapper
+import presenter.IntDoubleReMapper
 import ui.gradientmaker.ColorProducer
 import ui.gradientmaker.controller.ColorPalette
 import ui.gradientmaker.controller.ColorPickerController
@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage
 
 val mainModule = module(createdAtStart = true) {
     singleOf(::FractalManager)
-    single<RangeRemapper<Int, Double>> { ScreenMapper() }
+    single<RangeRemapper<Int, Double>> { IntDoubleReMapper() }
 
     single<Interpolator<Color>> { AwtColorInterpolator() }
     single { Palette(255, get()) }
@@ -34,7 +34,7 @@ val mainModule = module(createdAtStart = true) {
     singleOf(::FractalFactory)
 }
 
-val colorPickerModule = module {
+val gradientMakerModule = module {
     singleOf(::ColorPickerController)
     singleOf(::CoordinateConverter)
     single { GradientSliderController() }

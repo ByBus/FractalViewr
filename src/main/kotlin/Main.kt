@@ -6,7 +6,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import di.colorPickerModule
+import di.gradientMakerModule
 import di.mainModule
 import domain.FractalFactory
 import org.koin.core.context.GlobalContext.startKoin
@@ -14,26 +14,26 @@ import org.koin.java.KoinJavaComponent.getKoin
 import ui.App
 import ui.AppIcon
 
-fun main() = application {
-
+fun main() {
     startKoin {
-        modules(colorPickerModule, mainModule)
+        modules(gradientMakerModule, mainModule)
     }
-    val fractalFactory: FractalFactory = getKoin().get()
-
-    Window(
-        onCloseRequest = ::exitApplication,
-        state = WindowState(
-            size = DpSize(1280.dp, Dp.Unspecified),
-            position = WindowPosition.Aligned(Alignment.Center)
-        ),
-        title = Localization.appName,
-        icon = AppIcon()
-    ) {
-        App(
-            fractalManager = getKoin().get(),
-            colorPickerController = getKoin().get(),
-            gradientSliderController = getKoin().get()
-        )
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            state = WindowState(
+                size = DpSize(1280.dp, Dp.Unspecified),
+                position = WindowPosition.Aligned(Alignment.Center)
+            ),
+            title = Localization.appName,
+            icon = AppIcon()
+        ) {
+            App(
+                fractalManager = getKoin().get(),
+                fractalFactory = getKoin().get<FractalFactory>(),
+                colorPickerController = getKoin().get(),
+                gradientSliderController = getKoin().get()
+            )
+        }
     }
 }

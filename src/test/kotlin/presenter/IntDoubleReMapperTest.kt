@@ -3,9 +3,9 @@ package presenter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ScreenMapperTest {
+class IntDoubleReMapperTest {
 
-    val mapper = ScreenMapper()
+    val mapper = IntDoubleReMapper()
 
     @Test
     fun reMapWidth() {
