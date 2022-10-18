@@ -8,7 +8,6 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import di.gradientMakerModule
 import di.mainModule
-import domain.FractalFactory
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
 import ui.App
@@ -30,7 +29,7 @@ fun main() {
         ) {
             App(
                 fractalManager = getKoin().get(),
-                fractalFactory = getKoin().get<FractalFactory>(),
+                fractalFactory = getKoin().get(),
                 colorPickerController = getKoin().get(),
                 gradientSliderController = getKoin().get()
             )

@@ -25,7 +25,6 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import domain.*
 import ui.gradientmaker.controller.ColorPickerController
@@ -44,6 +43,7 @@ fun App(
     gradientSliderController: GradientSliderController,
 ) {
     FractalTheme {
+
         Row(modifier = Modifier) {
             FractalViewPort(fractalManager)
             val openDialog = remember { mutableStateOf(false) }
@@ -95,6 +95,7 @@ private fun ColumnScope.AppearanceAnimated(
     }
 }
 
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun FractalViewPort(fractalManager: FractalManager) {
@@ -106,7 +107,7 @@ private fun FractalViewPort(fractalManager: FractalManager) {
         .onPointerEvent(PointerEventType.Scroll) {
             with(it.changes.first()) {
                 fractalManager.setScroll(scrollDelta.y, position.x.toInt(), position.y.toInt())
-                fractalManager.computePreviewAndFinal()
+                fractalManager.computePreviewAndThenImage()
             }
         }
         .pointerInput(Unit) {
@@ -130,10 +131,6 @@ private fun FractalViewPort(fractalManager: FractalManager) {
         fractalManager.invalidator.let {
             drawImage(image = canvasImg.toComposeImageBitmap())
         }
-    }
-    SideEffect {
-        println("First run")
-        //fractalManager.computePreviewAndFinal(100)
     }
 }
 

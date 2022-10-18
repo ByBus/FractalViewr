@@ -5,7 +5,8 @@ import data.Interpolator
 typealias ColorAwt = java.awt.Color
 
 class Palette(private val size: Int = 255, private val interpolator: Interpolator<ColorAwt>) {
-    private val colors = IntArray(size){0x00421E0F}
+
+    private val colors = IntArray(size) { 0x00421E0F }
 
     fun getColor(position: Int): Int {
         return colors[position and size - 1]
@@ -29,6 +30,7 @@ class Palette(private val size: Int = 255, private val interpolator: Interpolato
             }
         }
     }
+
     private fun computeStepsInBetweenColors(gradient: List<Pair<Float, ColorAwt>>, parts: Int): IntArray {
         val steps = IntArray(parts) { 0 }
         (1..parts).forEach { i ->

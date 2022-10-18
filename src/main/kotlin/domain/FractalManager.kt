@@ -28,25 +28,29 @@ class FractalManager(
     private val gradientRepository: GradientRepository,
     private val imageFileSaver: FileSaver<BufferedImage>,
 ) {
+    private var job: Job = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+
     private var fractal: Fractal = Mandelbrot()
     private var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
 
-    init {
-        println("FractalManager INIT")
-        setGradient(gradientRepository.gradients[0].colorStops)
-    }
-
+    var showSplashScreen by mutableStateOf(true)
     val gradients = gradientRepository.gradients
+
     var invalidator by mutableStateOf(0)
         private set
-
     private val previewBuffer = BufferedImage(PREVIEW_WIDTH, PREVIEW_HEIGHT, BufferedImage.TYPE_INT_RGB)
     private val buffer = BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB)
+
     val image by mutableStateOf(buffer)
 
-    private val heightValues = (0 until buffer.height).toList()
-    private val widthValues = (0 until buffer.width).toList()
-    private val randomPixelCombinations = heightValues.cartesianProduct(widthValues).shuffled().chunked(20)
+    private val randomPixelCombinations = (0 until buffer.height).asSequence()
+        .cartesianProductOfInts((0 until buffer.width).asSequence())
+        .toList()
+        .shuffled()
+        .chunked(1000) { it ->
+            it.flatten().toIntArray()
+        }
 
     fun setScroll(direction: Float, x: Int, y: Int) {
         val state = canvasStateHolder.state()
@@ -54,69 +58,68 @@ class FractalManager(
         canvasStateHolder.save(state.scaledNear(direction, x0, y0))
     }
 
-    private var job: Job = Job()
-    private val coroutineScope = CoroutineScope(Dispatchers.Default)
     fun computeImage() {
         job.cancel()
         job = coroutineScope.launch {
             randomPixelsFinal()
-            invalidator++
         }
     }
 
     fun computePreview() {
         coroutineScope.launch {
-            compute(previewBuffer)
+            computeSequentialPixels(previewBuffer)
             with(image) {
                 data = previewBuffer.upscale(width, height).data
             }
         }
     }
 
-    fun computePreviewAndFinal(delay: Long = 0L) {
+    fun computePreviewAndThenImage(delay: Long = 0L) {
         job.cancel()
         job = coroutineScope.launch {
             delay(delay)
-            compute(previewBuffer)
-            with(image) {
+            computeSequentialPixels(previewBuffer)
+            with(buffer) {
                 data = previewBuffer.upscale(width, height).data
             }
             randomPixelsFinal()
         }
     }
-    private fun CoroutineScope.randomPixelsFinal() {
+
+    private fun CoroutineScope.randomPixelsFinal(image: BufferedImage = buffer) {
         val state = canvasStateHolder.state()
-        randomPixelCombinations.forEach{ chunk ->
-            if (isActive) {
-                for ((y, x) in chunk) {
+        randomPixelCombinations.forEach { chunk ->
+            launch {
+                for (i in chunk.indices step 2) {
                     if (isActive.not()) break
-                    val (x0, y0) = mapToCanvas(x, y, buffer.width, buffer.height, state)
-                    val value = fractal.calculate(x0, y0)
-                    val color = palette.getColor(value)
-                    buffer.setRGB(x, y, color)
+                    compute(chunk[i], chunk[i + 1], image, state)
                 }
                 invalidator++
             }
         }
     }
-    private fun <S, T> List<S>.cartesianProduct(other: List<T>) = this.flatMap { thisIt ->
-        other.map { otherIt ->
-            thisIt to otherIt
-        }
-    }
 
-    private fun CoroutineScope.compute(image: BufferedImage) {
+    private fun CoroutineScope.computeSequentialPixels(image: BufferedImage) {
         val state = canvasStateHolder.state()
         for (y in 0 until image.height) {
             for (x in 0 until image.width) {
                 if (!isActive) break
-                val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
-                val value = fractal.calculate(x0, y0)
-                val color = palette.getColor(value)
-                image.setRGB(x, y, color)
+                compute(x, y, image, state)
             }
             invalidator++
         }
+    }
+
+    private fun compute(
+        x: Int,
+        y: Int,
+        image: BufferedImage,
+        state: FractalSpaceState<Double>,
+    ) {
+        val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
+        val value = fractal.calculate(x0, y0)
+        val color = palette.getColor(value)
+        image.setRGB(x, y, color)
     }
 
     private fun mapToCanvas(
@@ -145,6 +148,7 @@ class FractalManager(
 
     fun setGradient(gradient: List<Pair<Float, Int>>) {
         palette.setGradient(gradient.map { it.first to Color(it.second) })
+        computeImage()
     }
 
     fun saveCurrentState() {
@@ -184,10 +188,27 @@ class FractalManager(
     fun setConfiguration(fractal: Fractal, state: CanvasState) {
         this.fractal = fractal
         this.canvasStateHolder = CanvasStateHolder(state)
-        computePreviewAndFinal(500)
+        computePreviewAndThenImage()
     }
 
     fun saveImage(file: File) {
         imageFileSaver.save(buffer, file)
     }
+
+    init {
+        println("FractalManager INIT")
+        setGradient(gradientRepository.gradients[0].colorStops)
+        computePreviewAndThenImage()
+        coroutineScope.launch {
+            delay(2000)
+            showSplashScreen = false
+        }
+    }
 }
+
+private fun <T> Sequence<T>.cartesianProductOfInts(other: Sequence<T>) = this.flatMap { thisIt ->
+    other.map { otherIt ->
+        listOf(thisIt, otherIt)
+    }
+}
+
