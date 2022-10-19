@@ -2,17 +2,17 @@ package data.fractal
 
 import domain.Fractal
 
-class Julia(
+class JuliaCubic(
     private val maxIterations: Int = 255,
-    private val realC: Double = -0.70176,
-    private val imaginaryC: Double = -0.3842,
+    private val realC: Double = 0.53,
+    private val imaginaryC: Double = 0.1,
 ) : Fractal {
     override fun calculate(x0: Double, y0: Double): Int {
         var z = Complex(x0, y0)
         val c = Complex(realC, imaginaryC)
         var iteration = 0
         while (z.abs() <= 4 && iteration < maxIterations) {
-            z = z.sqr() + c
+            z = z.cube() + c
             iteration++
         }
         return iteration

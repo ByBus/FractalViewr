@@ -16,5 +16,5 @@ object Localization {
     const val ok = "OK"
     const val cancel = "Cancel"
     // SubSelector
-    const val juliaconstant: String = "Julia fractal constant"
+    const val juliaConstant: String = "Julia fractal constant"
 }

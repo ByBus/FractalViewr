@@ -56,6 +56,7 @@ class FractalManager(
         val state = canvasStateHolder.state()
         val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
         canvasStateHolder.save(state.scaledNear(direction, x0, y0))
+        computePreviewAndThenImage()
     }
 
     fun computeImage() {
@@ -168,6 +169,7 @@ class FractalManager(
             }
             val (deltaX0, deltaY0) = mapSize(xyToCanvasMapper)
             shift(kX * deltaX0, kY * deltaY0)
+            computePreview()
         }
     }
 

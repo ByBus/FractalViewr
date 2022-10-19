@@ -43,7 +43,6 @@ fun App(
     gradientSliderController: GradientSliderController,
 ) {
     FractalTheme {
-
         Row(modifier = Modifier) {
             FractalViewPort(fractalManager)
             val openDialog = remember { mutableStateOf(false) }
@@ -61,7 +60,7 @@ fun App(
                     fractalFactory.changeConfiguration(currentFractal)
                 }
                 AppearanceAnimated(currentFractal == MainFractals.JULIA) {
-                    DropdownMenuSelector(JuliaFamily.values().map { it.title() }, label = Localization.juliaconstant) {
+                    DropdownMenuSelector(JuliaFamily.values().map { it.title() }, label = Localization.juliaConstant) {
                         fractalFactory.changeConfiguration(JuliaFamily.values()[it])
                     }
                 }
@@ -95,7 +94,6 @@ private fun ColumnScope.AppearanceAnimated(
     }
 }
 
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun FractalViewPort(fractalManager: FractalManager) {
@@ -107,7 +105,6 @@ private fun FractalViewPort(fractalManager: FractalManager) {
         .onPointerEvent(PointerEventType.Scroll) {
             with(it.changes.first()) {
                 fractalManager.setScroll(scrollDelta.y, position.x.toInt(), position.y.toInt())
-                fractalManager.computePreviewAndThenImage()
             }
         }
         .pointerInput(Unit) {
@@ -119,7 +116,6 @@ private fun FractalViewPort(fractalManager: FractalManager) {
                 onDrag = { change, _ ->
                     val dragDelta = dragInitPosition - change.position
                     fractalManager.dragCanvas(dragDelta.x.toInt(), dragDelta.y.toInt())
-                    fractalManager.computePreview()
                     dragInitPosition = change.position
                 },
                 onDragEnd = {

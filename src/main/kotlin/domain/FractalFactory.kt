@@ -1,8 +1,7 @@
 package domain
 
 import data.CanvasState
-import data.fractal.Julia
-import data.fractal.Mandelbrot
+import data.fractal.*
 
 class FractalFactory(private val fractalManager: FractalManager) {
     fun changeConfiguration(type: FractalType) {
@@ -14,6 +13,9 @@ class FractalFactory(private val fractalManager: FractalManager) {
             JuliaFamily.JULIA5 -> Julia(realC = -0.7269, imaginaryC = 0.1889) to CanvasState(-1.5, 1.5, -1.5, 1.5)
             JuliaFamily.JULIA6 -> Julia(realC = -0.4, imaginaryC = 0.6) to CanvasState(-1.5, 1.5, -1.5, 1.5)
             JuliaFamily.JULIA7 -> Julia(realC = 0.0, imaginaryC =  -0.8) to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            JuliaFamily.JULIA8 -> JuliaCubic() to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            MainFractals.BURNING_SHIP -> BurningShip() to CanvasState(-2.2, 1.3, -2.0, 1.0)
+            MainFractals.PHOENIX -> Phoenix() to CanvasState(-1.5, 1.5, -1.5, 1.5)
             else -> Mandelbrot() to CanvasState(-2.0, 1.0, -1.5, 1.5)
         }
         fractalManager.setConfiguration(fractal, state)
@@ -25,7 +27,9 @@ interface FractalType {
 }
 enum class MainFractals(private val title: String) : FractalType {
     MANDELBROT("Mandelbrot"),
-    JULIA("Julia");
+    JULIA("Julia"),
+    BURNING_SHIP("Burning Ship"),
+    PHOENIX("Phoenix");
     override fun title(): String = title
 }
 
@@ -36,7 +40,8 @@ enum class JuliaFamily(private val title: String) : FractalType{
     JULIA4("0.2+0.01i"),
     JULIA5("-0.7+0.2i"),
     JULIA6("-0.4+0.06i"),
-    JULIA7("-0.8i");
+    JULIA7("-0.8i"),
+    JULIA8("Cubic 0.5+0.1i");
     override fun title(): String = title
 }
 
