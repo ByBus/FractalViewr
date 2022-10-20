@@ -1,16 +1,17 @@
 package data
 
-import androidx.compose.runtime.mutableStateListOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class GradientRepository(defaultGradients: DataSource<GradientData>) {
-    var gradients = mutableStateListOf<GradientData>()
-        private set
+    private var _gradients = MutableStateFlow(emptyList<GradientData>())
+    val gradients = _gradients.asStateFlow()
 
     init {
-        gradients.addAll(defaultGradients.readAll())
+        _gradients.value = defaultGradients.readAll()
     }
 
     fun save(gradientData: GradientData) {
-        gradients.add(0, gradientData)
+        _gradients.value = listOf(gradientData) + _gradients.value
     }
 }

@@ -1,11 +1,10 @@
 package domain
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import data.*
 import data.fractal.Mandelbrot
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import presenter.Palette
 import presenter.RangeRemapper
 import java.awt.Color
@@ -36,89 +35,87 @@ class FractalManager(
     private var fractal: Fractal = Mandelbrot()
     private var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
 
-    var showSplashScreen by mutableStateOf(true)
-    val gradients = gradientRepository.gradients
-
-    var invalidator by mutableStateOf(0)
-        private set
     private val previewBuffer = BufferedImage(PREVIEW_WIDTH, PREVIEW_HEIGHT, BufferedImage.TYPE_INT_RGB)
     private val buffer = BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB)
 
-    val image by mutableStateOf(buffer)
+    val gradients = gradientRepository.gradients
+
+    private val _invalidator = MutableStateFlow(0)
+    val invalidator = _invalidator.asStateFlow()
+
+    val image = MutableStateFlow(buffer).asStateFlow()
 
     private val randomPixelCombinations = (0 until buffer.height).asSequence()
-        .cartesianProductOfInts((0 until buffer.width).asSequence())
+        .cartesianProduct((0 until buffer.width).asSequence())
         .toList()
         .shuffled()
         .chunked(1000) { it ->
             it.flatten().toIntArray()
-        }
+        }.toTypedArray()
 
-    @OptIn(ExperimentalTime::class)
     fun setScroll(direction: Float, x: Int, y: Int) {
         val state = canvasStateHolder.state()
-        val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
+        val (x0, y0) = mapToCanvas(x, y, buffer.width, buffer.height, state)
         canvasStateHolder.save(state.scaledNear(direction, x0, y0))
-        val (_, duration) = measureTimedValue {
-            computePreviewAndThenImage()
+        computePreviewAndThenImage()
+    }
+
+    fun computeImage(withPreviewFirst: Boolean = true) {
+        job.cancel()
+        job = coroutineScope.launch {
+            if (withPreviewFirst) fulfillBufferWithPreview()
+            computeRandomPixels()
         }
-        println("Generation time is $duration")
+    }
+
+    private fun computePreview() {
+        job = coroutineScope.launch {
+            computeSequentialPixels(previewBuffer)
+            if (isActive) fulfillBufferWithPreview()
+        }
+    }
+
+    private fun fulfillBufferWithPreview() {
+        with(buffer) {
+            data = previewBuffer.upscale(width, height).data
+        }
+    }
+
+    private fun computePreviewAndThenImage() {
+        job.cancel()
+        job = coroutineScope.launch {
+            computeSequentialPixels(previewBuffer)
+            fulfillBufferWithPreview()
+            computeRandomPixels()
+        }
     }
 
     @OptIn(ExperimentalTime::class)
-    fun computeImage() {
-        job.cancel()
-        val (_, duration) = measureTimedValue{
-            job = coroutineScope.launch {
-                randomPixelsFinal()
+    private fun CoroutineScope.computeRandomPixels(image: BufferedImage = buffer) {
+        val state = canvasStateHolder.state()
+        val (_, duration) = measureTimedValue {
+            randomPixelCombinations.forEach { chunk ->
+                launch {
+                    for (i in chunk.indices step 2) {
+                        if (!isActive) return@launch
+                        compute(chunk[i], chunk[i + 1], image, state)
+                    }
+                    _invalidator.value--
+                }
             }
         }
         println("Generation time is $duration")
-    }
-
-    fun computePreview() {
-        coroutineScope.launch {
-            computeSequentialPixels(previewBuffer)
-            with(image) {
-                data = previewBuffer.upscale(width, height).data
-            }
-        }
-    }
-
-    fun computePreviewAndThenImage(delay: Long = 0L) {
-        job.cancel()
-        job = coroutineScope.launch {
-            delay(delay)
-            computeSequentialPixels(previewBuffer)
-            with(buffer) {
-                data = previewBuffer.upscale(width, height).data
-            }
-            randomPixelsFinal()
-        }
-    }
-
-    private fun CoroutineScope.randomPixelsFinal(image: BufferedImage = buffer) {
-        val state = canvasStateHolder.state()
-        randomPixelCombinations.forEach { chunk ->
-            launch {
-                for (i in chunk.indices step 2) {
-                    if (isActive.not()) break
-                    compute(chunk[i], chunk[i + 1], image, state)
-                }
-                invalidator++
-            }
-        }
     }
 
     private fun CoroutineScope.computeSequentialPixels(image: BufferedImage) {
         val state = canvasStateHolder.state()
-        for (y in 0 until image.height) {
+        outer@ for (y in 0 until image.height) {
             for (x in 0 until image.width) {
-                if (!isActive) break
+                if (!isActive) break@outer
                 compute(x, y, image, state)
             }
-            invalidator++
         }
+        _invalidator.value++
     }
 
     private fun compute(
@@ -159,7 +156,7 @@ class FractalManager(
 
     fun setGradient(gradient: List<Pair<Float, Int>>) {
         palette.setGradient(gradient.map { it.first to Color(it.second) })
-        computeImage()
+        computeImage(withPreviewFirst = false)
     }
 
     fun saveCurrentState() {
@@ -189,12 +186,12 @@ class FractalManager(
 
     fun undo() {
         canvasStateHolder.removeLast()
-        computeImage()
+        computeImage(withPreviewFirst = false)
     }
 
     fun reset() {
         canvasStateHolder.reset()
-        computeImage()
+        computeImage(withPreviewFirst = false)
     }
 
     fun setConfiguration(fractal: Fractal, state: CanvasState) {
@@ -209,16 +206,12 @@ class FractalManager(
 
     init {
         println("FractalManager INIT")
-        setGradient(gradientRepository.gradients[0].colorStops)
+        setGradient(gradientRepository.gradients.value[0].colorStops)
         computePreviewAndThenImage()
-        coroutineScope.launch {
-            delay(2000)
-            showSplashScreen = false
-        }
     }
 }
 
-private fun <T> Sequence<T>.cartesianProductOfInts(other: Sequence<T>) = this.flatMap { thisIt ->
+private fun <T> Sequence<T>.cartesianProduct(other: Sequence<T>) = this.flatMap { thisIt ->
     other.map { otherIt ->
         listOf(thisIt, otherIt)
     }

@@ -53,7 +53,7 @@ fun App(
             Column(modifier = Modifier) {
                 ToolBar(openDialog, fractalManager)
                 DropdownMenuSelector(
-                    MainFractals.values().map { it.title() },
+                    items = MainFractals.values().map { it.title() },
                     label = Localization.fractalSelectorTitle
                 ) {
                     currentFractal = MainFractals.values()[it]
@@ -79,13 +79,10 @@ private fun ColumnScope.AppearanceAnimated(
     AnimatedVisibility(
         visible = visibility,
         enter = slideInVertically {
-            // Slide in from 40 dp from the top.
             with(density) { -40.dp.roundToPx() }
         } + expandVertically(
-            // Expand from the top.
             expandFrom = Alignment.Top
         ) + fadeIn(
-            // Fade in with the initial alpha of 0.3f.
             initialAlpha = 0.3f
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
@@ -97,7 +94,8 @@ private fun ColumnScope.AppearanceAnimated(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun FractalViewPort(fractalManager: FractalManager) {
-    val canvasImg = fractalManager.image
+    val canvasImg by fractalManager.image.collectAsState()
+    val invalidate by fractalManager.invalidator.collectAsState()
     var dragInitPosition = remember { Offset(0f, 0f) }
     Canvas(modifier = Modifier
         .width(canvasImg.width.dp)
@@ -124,7 +122,7 @@ private fun FractalViewPort(fractalManager: FractalManager) {
             )
         }
     ) {
-        fractalManager.invalidator.let {
+        invalidate.let {
             drawImage(image = canvasImg.toComposeImageBitmap())
         }
     }
@@ -133,8 +131,9 @@ private fun FractalViewPort(fractalManager: FractalManager) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun GradientButtons(fractalManager: FractalManager) {
+    val items by fractalManager.gradients.collectAsState()
     LazyColumn(modifier = Modifier.padding(8.dp)) {
-        items(items = fractalManager.gradients, key = { it.id }
+        items(items = items, key = { it.id }
         ) { gradient ->
             Row(
                 modifier = Modifier.animateItemPlacement(
@@ -146,7 +145,6 @@ private fun GradientButtons(fractalManager: FractalManager) {
                     gradient = gradient.colorStops.map { it.first to Color(it.second) },
                     onClick = {
                         fractalManager.setGradient(gradient.colorStops)
-                        fractalManager.computeImage()
                     },
                     modifier = Modifier.fillMaxWidth()
                 )

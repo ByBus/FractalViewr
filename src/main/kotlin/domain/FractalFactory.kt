@@ -8,10 +8,11 @@ class FractalFactory(private val fractalManager: FractalManager) {
         val (fractal, state) = when (type) {
             MainFractals.JULIA -> Julia() to CanvasState(-1.5, 1.5, -1.5, 1.5)
             is JuliaFamily -> {
-                val juliaFractal = if (type == JuliaFamily.JULIA_CUBIC)
-                    JuliaCubic()
-                else type.map { r, i ->
-                    Julia(realC = r, imaginaryC = i)
+                val juliaFractal = type.map { r, i ->
+                    if (type == JuliaFamily.JULIA_CUBIC)
+                        JuliaCubic(realC = r, imaginaryC = i) 
+                    else
+                        Julia(realC = r, imaginaryC = i)
                 }
                 juliaFractal to CanvasState(-1.5, 1.5, -1.5, 1.5)
             }
