@@ -9,12 +9,13 @@ class Phoenix(
 ) : Fractal {
     override fun calculate(x0: Double, y0: Double): Int {
         val zPrev = Complex(0.0, 0.0)
-        var z = Complex(y0, x0)
+        val z = Complex(y0, x0)
         val c = Complex(p, c)
+        val temp = Complex(z.real, z.img)
         var iteration = 0
         while (z.abs() <= 4 && iteration < maxIterations) {
-            val temp = Complex(z.real, z.img)
-            z = z.sqr() + c.img + zPrev * c.real
+            temp.set(real = z.real, img = z.img)
+            z.sqr() + c.img + zPrev * c.real
             zPrev.set(temp.real, temp.img)
             iteration++
         }

@@ -8,11 +8,11 @@ class JuliaCubic(
     private val imaginaryC: Double = 0.1,
 ) : Fractal {
     override fun calculate(x0: Double, y0: Double): Int {
-        var z = Complex(x0, y0)
+        val z = Complex(x0, y0)
         val c = Complex(realC, imaginaryC)
         var iteration = 0
         while (z.abs() <= 4 && iteration < maxIterations) {
-            z = z.cube() + c
+            z.cube() + c
             iteration++
         }
         return iteration
