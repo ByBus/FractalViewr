@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ui.gradientmaker.GradientMaker
 import ui.gradientmaker.controller.ColorPickerController
@@ -19,6 +20,7 @@ fun GradientMakerDialog(
     openDialog: MutableState<Boolean>,
     colorPickerController: ColorPickerController,
     gradientSliderController: GradientSliderController,
+    dialogWidth: Dp = 420.dp,
     onConfirm: (String, List<Pair<Float, Int>>) -> Unit = { _, _ -> },
 ) {
     if (openDialog.value) {
@@ -26,12 +28,13 @@ fun GradientMakerDialog(
         var gradientName by remember { mutableStateOf("NEW Gradient") }
         var showError by remember { mutableStateOf(false) }
         AlertDialog(
+            modifier = Modifier.width(dialogWidth),
             onDismissRequest = {},
             title = {
                 Text(text = Localization.gradientMakerTitle.uppercase(), style = MaterialTheme.typography.h6)
             },
             text = {
-                Column(modifier = Modifier.width(350.dp)) {
+                Column {
                     TextField(
                         value = gradientName,
                         onValueChange = { gradientName = it; showError = it.isBlank() },
