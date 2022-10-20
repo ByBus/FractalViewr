@@ -6,14 +6,16 @@ import data.fractal.*
 class FractalFactory(private val fractalManager: FractalManager) {
     fun changeConfiguration(type: FractalType) {
         val (fractal, state) = when (type) {
-            MainFractals.JULIA, JuliaFamily.JULIA1 -> Julia() to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            JuliaFamily.JULIA2 -> Julia(realC = -0.835, imaginaryC = -0.2321) to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            JuliaFamily.JULIA3 -> Julia(realC = -0.8, imaginaryC = 0.156) to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            JuliaFamily.JULIA4 -> Julia(realC = 0.285, imaginaryC = 0.01) to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            JuliaFamily.JULIA5 -> Julia(realC = -0.7269, imaginaryC = 0.1889) to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            JuliaFamily.JULIA6 -> Julia(realC = -0.4, imaginaryC = 0.6) to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            JuliaFamily.JULIA7 -> Julia(realC = 0.0, imaginaryC =  -0.8) to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            JuliaFamily.JULIA8 -> JuliaCubic() to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            MainFractals.JULIA -> Julia() to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            is JuliaFamily -> {
+                val juliaFractal = if (type == JuliaFamily.JULIA_CUBIC)
+                    JuliaCubic()
+                else type.map { r, i ->
+                    Julia(realC = r, imaginaryC = i)
+                }
+                juliaFractal to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            }
+
             MainFractals.BURNING_SHIP -> BurningShip() to CanvasState(-2.2, 1.3, -2.0, 1.0)
             MainFractals.PHOENIX -> Phoenix() to CanvasState(-1.5, 1.5, -1.5, 1.5)
             else -> Mandelbrot() to CanvasState(-2.0, 1.0, -1.5, 1.5)
@@ -23,25 +25,38 @@ class FractalFactory(private val fractalManager: FractalManager) {
 }
 
 interface FractalType {
-    fun title() : String
+    fun title(): String
 }
+
 enum class MainFractals(private val title: String) : FractalType {
     MANDELBROT("Mandelbrot"),
     JULIA("Julia"),
     BURNING_SHIP("Burning Ship"),
     PHOENIX("Phoenix");
+
     override fun title(): String = title
 }
 
-enum class JuliaFamily(private val title: String) : FractalType{
-    JULIA1("-0.7-0.3i"),
-    JULIA2("-0.8-0.2i"),
-    JULIA3("-0.8+0.1i"),
-    JULIA4("0.2+0.01i"),
-    JULIA5("-0.7+0.2i"),
-    JULIA6("-0.4+0.06i"),
-    JULIA7("-0.8i"),
-    JULIA8("Cubic 0.5+0.1i");
-    override fun title(): String = title
+enum class JuliaFamily(
+    private val realC: Double,
+    private val imaginaryC: Double,
+    private val prefix: String = "",
+) : FractalType {
+    JULIA1(-0.70176, -0.3842),
+    JULIA2(-0.835, -0.2321),
+    JULIA3(-0.8, 0.156),
+    JULIA4(0.285, 0.01),
+    JULIA5(-0.7269, 0.1889),
+    JULIA6(-0.4, 0.6),
+    JULIA7(0.0, -0.8),
+    JULIA_CUBIC(0.53, 0.1, prefix = "Cubic");
+
+    override fun title(): String {
+        return String.format("$prefix %.2f%+.2fi", realC, imaginaryC)
+    }
+
+    fun <T> map(mapper: (Double, Double) -> T): T {
+        return mapper(realC, imaginaryC)
+    }
 }
 
