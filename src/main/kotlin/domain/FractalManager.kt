@@ -12,6 +12,8 @@ import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.File
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 
 private const val WIDTH = 1000
@@ -52,18 +54,26 @@ class FractalManager(
             it.flatten().toIntArray()
         }
 
+    @OptIn(ExperimentalTime::class)
     fun setScroll(direction: Float, x: Int, y: Int) {
         val state = canvasStateHolder.state()
         val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
         canvasStateHolder.save(state.scaledNear(direction, x0, y0))
-        computePreviewAndThenImage()
+        val (_, duration) = measureTimedValue {
+            computePreviewAndThenImage()
+        }
+        println("Generation time is $duration")
     }
 
+    @OptIn(ExperimentalTime::class)
     fun computeImage() {
         job.cancel()
-        job = coroutineScope.launch {
-            randomPixelsFinal()
+        val (_, duration) = measureTimedValue{
+            job = coroutineScope.launch {
+                randomPixelsFinal()
+            }
         }
+        println("Generation time is $duration")
     }
 
     fun computePreview() {
