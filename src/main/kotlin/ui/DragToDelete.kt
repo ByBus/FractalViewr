@@ -29,7 +29,7 @@ fun DragToDelete(onDelete: () -> Unit, content: @Composable () -> Unit) {
         ),
         modifier = Modifier,
         dismissThresholds = { direction ->
-            FractionalThreshold(0.3f)
+            FractionalThreshold(if (direction == DismissDirection.StartToEnd) 0.25f else 0.05f)
         },
         background = {
             val color by animateColorAsState(

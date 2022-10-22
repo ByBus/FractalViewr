@@ -128,30 +128,32 @@ private fun FractalViewPort(fractalManager: FractalManager) {
 @Composable
 private fun GradientButtons(fractalManager: FractalManager) {
     val items by fractalManager.gradients.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
     LazyColumn(modifier = Modifier.padding(8.dp)) {
         items(items = items, key = { it.id }
         ) { gradient ->
             Row(
                 modifier = Modifier.animateItemPlacement(
-                    spring(dampingRatio = Spring.DampingRatioMediumBouncy, Spring.StiffnessMedium)
+                    spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium)
                 )
             ) {
-                val button: @Composable () -> Unit = {
+                val button: @Composable (Modifier) -> Unit = { modifier: Modifier  ->
                     TextGradientButton(
                         text = gradient.name,
                         gradient = gradient.colorStops.map { it.first to Color(it.second) },
                         onClick = {
                             fractalManager.setGradient(gradient.colorStops)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = modifier.fillMaxWidth()
                     )
                 }
-                if (gradient.id > 0) { // default gradients have negative ids
-                    DragToDelete(onDelete = { fractalManager.delete(gradient) }) {
-                        button()
-                    }
+                if (gradient.id < 0) { // default gradients have negative ids
+                    val offsetX  =  remember { Animatable(0f) }
+                    button(Modifier.shakeOnDrag(offsetX, coroutineScope))
                 } else {
-                    button()
+                    DragToDelete(onDelete = { fractalManager.delete(gradient) }) {
+                        button(Modifier)
+                    }
                 }
             }
         }
