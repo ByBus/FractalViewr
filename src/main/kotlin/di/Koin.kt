@@ -2,15 +2,14 @@ package di
 
 
 import data.*
-import domain.FileSaver
-import domain.FractalFactory
-import domain.FractalManager
-import domain.ImageSaver
+import data.local.ExposedGradients
+import data.local.exposed.DAO
+import data.local.exposed.ExposedDao
+import domain.*
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import presenter.Palette
-import presenter.RangeRemapper
-import presenter.IntDoubleReMapper
+import presenter.*
 import ui.gradientmaker.ColorProducer
 import ui.gradientmaker.controller.ColorPalette
 import ui.gradientmaker.controller.ColorPickerController
@@ -26,7 +25,9 @@ val mainModule = module(createdAtStart = true) {
     single<Interpolator<Color>> { AwtColorInterpolator() }
     single { Palette(255, get()) }
 
-    single<DataSource<GradientData>> { DefaultGradients() }
+    singleOf(::DefaultGradients) { bind<DataSource<GradientData>>() }
+    singleOf(::ExposedDao) { bind<DAO>() }
+    singleOf(::ExposedGradients) { bind<MutableDataSource<GradientData>>() }
     singleOf(::GradientRepository)
 
     single<FileSaver<BufferedImage>> { ImageSaver() }
@@ -34,9 +35,10 @@ val mainModule = module(createdAtStart = true) {
     singleOf(::FractalFactory)
 }
 
+
 val gradientMakerModule = module {
     singleOf(::ColorPickerController)
     singleOf(::CoordinateConverter)
     single { GradientSliderController() }
-    single<ColorProducer> { ColorPalette() }
+    singleOf(::ColorPalette) { bind<ColorProducer>() }
 }

@@ -1,5 +1,6 @@
 package data
 
+import domain.FractalSpaceState
 import java.util.*
 
 class CanvasStateHolder (private var initialState: FractalSpaceState<Double>) {

@@ -1,17 +1,32 @@
 package data
 
+import domain.DataSource
+import domain.MutableDataSource
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class GradientRepository(defaultGradients: DataSource<GradientData>) {
+class GradientRepository(private val defaultGradients: DataSource<GradientData>,
+                         private val persistedGradients: MutableDataSource<GradientData>
+) {
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private var _gradients = MutableStateFlow(emptyList<GradientData>())
     val gradients = _gradients.asStateFlow()
 
     init {
-        _gradients.value = defaultGradients.readAll()
+        runBlocking {
+            refresh()
+        }
     }
 
     fun save(gradientData: GradientData) {
-        _gradients.value = listOf(gradientData) + _gradients.value
+        coroutineScope.launch {
+            persistedGradients.save(gradientData)
+            refresh()
+        }
+    }
+
+    private suspend fun refresh() {
+        _gradients.value = persistedGradients.readAll() + defaultGradients.readAll()
     }
 }

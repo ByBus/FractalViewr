@@ -9,6 +9,7 @@ plugins {
 
 group = "me.shumk"
 version = "1.0"
+val exposedVersion: String by project
 
 repositories {
     google()
@@ -24,6 +25,11 @@ dependencies {
     // Koin
     implementation("io.insert-koin:koin-core:3.2.2")
     testImplementation ("io.insert-koin:koin-test:3.2.2")
+    //Exposed
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("com.h2database:h2:2.1.214")
 }
 
 tasks.test {

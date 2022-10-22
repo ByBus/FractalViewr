@@ -1,5 +1,7 @@
 package data
 
+import domain.DataSource
+
 class DefaultGradients: DataSource<GradientData> {
     private var gradients = mutableListOf<GradientData>()
     init {
@@ -13,18 +15,18 @@ class DefaultGradients: DataSource<GradientData> {
                     "Gradient 5" to listOf(-1689274, -918802, -5711140, -12223587, -14863017, -1689274, -918802, -5711140, -12223587, -14863017),
                     "Gradient 6" to listOf(-10764053, -137396, -6568643, -744863, -362207),
                     "Gradient 7" to listOf(-12444145, -15136998, -16187089, -16513975, -16775324, -15979382, -15183183, -13009455, -7948827, -2888456, -923201, -472737, -22016, -3375104, -6727936, -9817085),
-                ).map {
+                ).mapIndexed { index, it ->
                     var position = 0f
                     val step = 1f / it.second.lastIndex
                     GradientData(it.first, it.second.map { colors ->
                         val pair = position.coerceAtMost(1f) to colors
                         position += step
                         pair
-                    })
+                    }, id = -(index + 1))
                 }
             )
         }
     }
 
-    override fun readAll(): List<GradientData> = gradients.toList()
+    override suspend fun readAll(): List<GradientData> = gradients.toList()
 }

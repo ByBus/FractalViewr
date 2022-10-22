@@ -1,4 +1,4 @@
-package data
+package domain
 
 interface FractalSpaceState<T> {
     fun scaledNear(direction: Float, x: T, y: T): FractalSpaceState<T>

@@ -1,11 +1,8 @@
 package presenter
 
-import data.Interpolator
-
 typealias ColorAwt = java.awt.Color
 
 class Palette(private val size: Int = 255, private val interpolator: Interpolator<ColorAwt>) {
-
     private val colors = IntArray(size) { 0x00421E0F }
 
     fun getColor(position: Int): Int {

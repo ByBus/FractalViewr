@@ -1,5 +1,6 @@
 package data
 
+import domain.FractalSpaceState
 import kotlin.math.abs
 
 class CanvasState(

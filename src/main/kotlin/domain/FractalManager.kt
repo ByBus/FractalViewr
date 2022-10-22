@@ -194,7 +194,7 @@ class FractalManager(
         computeImage(withPreviewFirst = false)
     }
 
-    fun setConfiguration(fractal: Fractal, state: CanvasState) {
+    fun setConfiguration(fractal: Fractal, state: FractalSpaceState<Double>) {
         this.fractal = fractal
         this.canvasStateHolder = CanvasStateHolder(state)
         computePreviewAndThenImage()
@@ -205,15 +205,13 @@ class FractalManager(
     }
 
     init {
-        println("FractalManager INIT")
-        setGradient(gradientRepository.gradients.value[0].colorStops)
-        computePreviewAndThenImage()
+        setGradient(gradients.value[0].colorStops)
     }
 }
 
-private fun <T> Sequence<T>.cartesianProduct(other: Sequence<T>) = this.flatMap { thisIt ->
-    other.map { otherIt ->
-        listOf(thisIt, otherIt)
+private fun <T> Sequence<T>.cartesianProduct(other: Sequence<T>) = this.flatMap { item1 ->
+    other.map { item2 ->
+        listOf(item1, item2)
     }
 }
 

@@ -43,13 +43,14 @@ fun App(
     gradientSliderController: GradientSliderController,
 ) {
     FractalTheme {
+        var currentFractal: FractalType by remember { mutableStateOf(MainFractals.MANDELBROT) }
+        val openDialog = remember { mutableStateOf(false) }
+        GradientMakerDialog(openDialog, colorPickerController, gradientSliderController) { name, colors ->
+            fractalManager.saveGradient(name, colors)
+        }
         Row(modifier = Modifier) {
+            println("RECOMPOSITION")
             FractalViewPort(fractalManager)
-            val openDialog = remember { mutableStateOf(false) }
-            GradientMakerDialog(openDialog, colorPickerController, gradientSliderController) { name, colors ->
-                fractalManager.saveGradient(name, colors)
-            }
-            var currentFractal: FractalType by remember { mutableStateOf(MainFractals.MANDELBROT) }
             Column(modifier = Modifier) {
                 ToolBar(openDialog, fractalManager)
                 DropdownMenuSelector(
@@ -168,8 +169,8 @@ private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalMa
     if (showFileSaveDialog) {
         FileSaveDialog(
             title = Localization.fileSaveDialogTitle,
-            onResult = {
-                it?.let {
+            onResult = { file ->
+                file?.let {
                     fractalManager.saveImage(it)
                 }
                 showFileSaveDialog = false
