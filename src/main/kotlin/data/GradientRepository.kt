@@ -27,6 +27,13 @@ class GradientRepository(
         }
     }
 
+    fun delete(gradientData: GradientData) {
+        coroutineScope.launch {
+            persistedGradients.delete(gradientData)
+            refresh()
+        }
+    }
+
     private suspend fun refresh() {
         _gradients.value = persistedGradients.readAll() + defaultGradients.readAll()
     }

@@ -2,8 +2,7 @@ package ui
 
 import Localization
 import androidx.compose.animation.*
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.*
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -125,7 +124,7 @@ private fun FractalViewPort(fractalManager: FractalManager) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun GradientButtons(fractalManager: FractalManager) {
     val items by fractalManager.gradients.collectAsState()
@@ -137,18 +136,28 @@ private fun GradientButtons(fractalManager: FractalManager) {
                     spring(dampingRatio = Spring.DampingRatioMediumBouncy, Spring.StiffnessMedium)
                 )
             ) {
-                TextGradientButton(
-                    text = gradient.name,
-                    gradient = gradient.colorStops.map { it.first to Color(it.second) },
-                    onClick = {
-                        fractalManager.setGradient(gradient.colorStops)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                val button: @Composable () -> Unit = {
+                    TextGradientButton(
+                        text = gradient.name,
+                        gradient = gradient.colorStops.map { it.first to Color(it.second) },
+                        onClick = {
+                            fractalManager.setGradient(gradient.colorStops)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                if (gradient.id > 0) { // default gradients have negative ids
+                    DragToDelete(onDelete = { fractalManager.delete(gradient) }) {
+                        button()
+                    }
+                } else {
+                    button()
+                }
             }
         }
     }
 }
+
 
 @Composable
 private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalManager) {

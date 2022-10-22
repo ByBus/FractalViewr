@@ -39,12 +39,8 @@ class ExposedDao : DAO {
     }
 
     override suspend fun deleteGradient(id: Int): Boolean {
-        val gradient = GradientDB.findById(id)
-        gradient?.let {
-            it.delete()
-            Colors.deleteWhere { Colors.gradient eq id }
-            return true
-        }
-        return false
+        Colors.deleteWhere { gradient eq id }
+        Gradients.deleteWhere { Gradients.id eq id }
+        return true
     }
 }

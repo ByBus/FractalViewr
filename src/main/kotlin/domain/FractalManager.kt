@@ -206,6 +206,10 @@ class FractalManager(
             it.flatten().toIntArray()
         }.toTypedArray()
 
+    fun delete(gradient: GradientData) {
+        gradientRepository.delete(gradient)
+    }
+
     init {
         setGradient(gradients.value[0].colorStops)
     }
