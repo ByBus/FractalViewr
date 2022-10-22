@@ -31,9 +31,6 @@ import ui.gradientmaker.controller.ColorPickerController
 import ui.gradientmaker.controller.GradientSliderController
 import ui.style.FractalTheme
 
-private const val WIDTH = 1000
-private const val HEIGHT = 1000
-
 @Composable
 @Preview
 fun App(
@@ -49,7 +46,6 @@ fun App(
             fractalManager.saveGradient(name, colors)
         }
         Row(modifier = Modifier) {
-            println("RECOMPOSITION")
             FractalViewPort(fractalManager)
             Column(modifier = Modifier) {
                 ToolBar(openDialog, fractalManager)

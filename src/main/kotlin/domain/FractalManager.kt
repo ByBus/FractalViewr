@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import presenter.Palette
 import presenter.RangeRemapper
-import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.File
@@ -25,7 +24,7 @@ typealias BiMapperPair<Double> = (Double, Double) -> Pair<Double, Double>
 
 class FractalManager(
     private val screenMapper: RangeRemapper<Int, Double>,
-    private val palette: Palette,
+    private val palette: Palette<Int>,
     private val gradientRepository: GradientRepository,
     private val imageFileSaver: FileSaver<BufferedImage>,
 ) {
@@ -45,13 +44,8 @@ class FractalManager(
 
     val image = MutableStateFlow(buffer).asStateFlow()
 
-    private val randomPixelCombinations = (0 until buffer.height).asSequence()
-        .cartesianProduct((0 until buffer.width).asSequence())
-        .toList()
-        .shuffled()
-        .chunked(1000) { it ->
-            it.flatten().toIntArray()
-        }.toTypedArray()
+    private val randomPixelCombinations = preparePixels(buffer.width, buffer.height)
+
 
     fun setScroll(direction: Float, x: Int, y: Int) {
         val state = canvasStateHolder.state()
@@ -126,7 +120,7 @@ class FractalManager(
     ) {
         val (x0, y0) = mapToCanvas(x, y, image.width, image.height, state)
         val value = fractal.calculate(x0, y0)
-        val color = palette.getColor(value)
+        val color = palette.color(value)
         image.setRGB(x, y, color)
     }
 
@@ -155,7 +149,7 @@ class FractalManager(
     }
 
     fun setGradient(gradient: List<Pair<Float, Int>>) {
-        palette.setGradient(gradient.map { it.first to Color(it.second) })
+        palette.setColors(gradient)
         computeImage(withPreviewFirst = false)
     }
 
@@ -203,6 +197,14 @@ class FractalManager(
     fun saveImage(file: File) {
         imageFileSaver.save(buffer, file)
     }
+
+    private fun preparePixels(width: Int, height: Int) = (0 until height).asSequence()
+        .cartesianProduct((0 until width).asSequence())
+        .toList()
+        .shuffled()
+        .chunked(1000) { it ->
+            it.flatten().toIntArray()
+        }.toTypedArray()
 
     init {
         setGradient(gradients.value[0].colorStops)

@@ -23,7 +23,7 @@ val mainModule = module(createdAtStart = true) {
     single<RangeRemapper<Int, Double>> { IntDoubleReMapper() }
 
     single<Interpolator<Color>> { AwtColorInterpolator() }
-    single { Palette(255, get()) }
+    single<Palette<Int>> { IntColorPalette(255, get()) }
 
     singleOf(::DefaultGradients) { bind<DataSource<GradientData>>() }
     singleOf(::ExposedDao) { bind<DAO>() }
