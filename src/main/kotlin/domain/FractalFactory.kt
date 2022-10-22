@@ -10,7 +10,7 @@ class FractalFactory(private val fractalManager: FractalManager) {
             is JuliaFamily -> {
                 val juliaFractal = type.map { r, i ->
                     if (type == JuliaFamily.JULIA_CUBIC)
-                        JuliaCubic(realC = r, imaginaryC = i) 
+                        JuliaCubic(realC = r, imaginaryC = i)
                     else
                         Julia(realC = r, imaginaryC = i)
                 }
@@ -19,6 +19,7 @@ class FractalFactory(private val fractalManager: FractalManager) {
 
             MainFractals.BURNING_SHIP -> BurningShip() to CanvasState(-2.2, 1.3, -2.0, 1.0)
             MainFractals.PHOENIX -> Phoenix() to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            MainFractals.LINES -> Lines() to CanvasState(-1.5, 1.5, -1.5, 1.5)
             else -> Mandelbrot() to CanvasState(-2.0, 1.0, -1.5, 1.5)
         }
         fractalManager.setConfiguration(fractal, state)
@@ -33,7 +34,8 @@ enum class MainFractals(private val title: String) : FractalType {
     MANDELBROT("Mandelbrot"),
     JULIA("Julia"),
     BURNING_SHIP("Burning Ship"),
-    PHOENIX("Phoenix");
+    PHOENIX("Phoenix"),
+    LINES("Lines");
 
     override fun title(): String = title
 }

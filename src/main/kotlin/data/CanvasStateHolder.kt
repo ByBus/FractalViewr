@@ -15,6 +15,7 @@ class CanvasStateHolder (private var initialState: FractalSpaceState<Double>) {
     fun save(state: FractalSpaceState<Double>) {
         states.push(state)
     }
+
     fun reset() {
         save(initialState)
     }
