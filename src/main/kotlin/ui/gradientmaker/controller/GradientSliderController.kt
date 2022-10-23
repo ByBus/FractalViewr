@@ -115,6 +115,7 @@ class GradientSliderController(
     fun reset() {
         with(gradientColors) {
             clear()
+            gradientColor = GradientColor.Empty
             addAll(
                 listOf(
                     GradientColor.Marker(initialColorPositions.first, colorStart),
