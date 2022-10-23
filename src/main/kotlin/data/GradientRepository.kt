@@ -29,7 +29,7 @@ class GradientRepository(
     }
 
     fun edit(gradientData: GradientData) {
-        executeAndRefresh { persistedGradients.edit(gradientData) }
+        executeAndRefresh { persistedGradients.update(gradientData) }
     }
 
     private suspend fun refresh() {

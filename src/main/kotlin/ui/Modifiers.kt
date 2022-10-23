@@ -36,7 +36,7 @@ fun Modifier.shakeOnDrag(offsetX: Animatable<Float, AnimationVector1D>, coroutin
                         offsetX.animateTo(
                             targetValue = 0f,
                             animationSpec = keyframes {
-                                durationMillis = 600
+                                durationMillis = 550
                                 -8f at 80
                                 8f at 160
                                 -8f at 240

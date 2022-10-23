@@ -53,7 +53,7 @@ fun App(
         ) { name, colors ->
             when (dialogState.value) {
                 GradientDialog.CREATE -> fractalManager.saveGradient(name, colors)
-                GradientDialog.EDIT -> fractalManager.editGradient(editDialogIdName.first, name, colors)
+                GradientDialog.EDIT -> fractalManager.editGradient(id = editDialogIdName.first, name, colors)
                 else -> {}
             }
         }
@@ -100,6 +100,22 @@ private fun ColumnScope.AppearanceAnimated(
             initialAlpha = 0.3f
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun BoxScope.AppearanceAnimated(
+    visibility: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = visibility,
+        enter = fadeIn(),
+        exit = fadeOut(),
+        modifier = modifier
     ) {
         content()
     }
@@ -168,15 +184,10 @@ private fun GradientButtons(
                         TextGradientButton(
                             text = gradient.name,
                             gradient = gradient.colorStops.map { it.first to Color(it.second) },
-                            onClick = {
-                                fractalManager.setGradient(gradient.colorStops)
-                            }
+                            onClick = { fractalManager.setGradient(gradient.colorStops) }
                         )
-                        EditButton(
-                            visible = editButtonVisibility,
-                            modifier = Modifier.align(Alignment.CenterStart)
-                        ) {
-                            onEdit(gradient.id, gradient.name, gradient.colorStops)
+                        AppearanceAnimated(editButtonVisibility, Modifier.align(Alignment.CenterStart).offset(x = 8.dp)){
+                            EditButton { onEdit(gradient.id, gradient.name, gradient.colorStops) }
                         }
                     }
                 }

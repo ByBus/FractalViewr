@@ -14,7 +14,7 @@ class ExposedGradients(private val database: DAO): MutableDataSource<GradientDat
         }
     }
 
-    override suspend fun edit(item: GradientData) {
+    override suspend fun update(item: GradientData) {
         dbQuery {
             with(item) {
                 database.editGradient(id, name, colorStops)

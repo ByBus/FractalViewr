@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 fun TextGradientButton(
     text: String,
     gradient: List<Pair<Float, Color>>,
-    onClick: () -> Unit,
     cornerRadius: Dp = 4.dp,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(cornerRadius)
     val horPadding = 32.dp
