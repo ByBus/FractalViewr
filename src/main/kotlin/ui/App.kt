@@ -43,10 +43,11 @@ fun App(
         var currentFractal: FractalType by remember { mutableStateOf(MainFractals.MANDELBROT) }
         val dialogState = remember { mutableStateOf(GradientDialog.CLOSED) }
         var editDialogIdName by remember { mutableStateOf(0 to "Name") }
+        val creationMode = dialogState.value == GradientDialog.CREATE
         GradientMakerDialog(
-            defaultName = if (dialogState.value == GradientDialog.CREATE) "NEW Gradient" else editDialogIdName.second,
+            defaultName = if (creationMode) "NEW Gradient" else editDialogIdName.second,
             openDialog = dialogState,
-            resetOnOpen = dialogState.value == GradientDialog.CREATE,
+            resetOnOpen = creationMode,
             colorPickerController = colorPickerController,
             gradientSliderController = gradientSliderController
         ) { name, colors ->
@@ -141,7 +142,7 @@ private fun FractalViewPort(fractalManager: FractalManager) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 private fun GradientButtons(
     fractalManager: FractalManager,
@@ -158,18 +159,26 @@ private fun GradientButtons(
                 )
             ) {
                 val button: @Composable (Modifier) -> Unit = { modifier: Modifier ->
-                    TextGradientButton(
-                        text = gradient.name,
-                        gradient = gradient.colorStops.map { it.first to Color(it.second) },
-                        onClick = {
-                            fractalManager.setGradient(gradient.colorStops)
-                        },
-                        onEdit = {
-                            onEdit.invoke(gradient.id, gradient.name, gradient.colorStops)
-                        },
-                        showEditButton = true,
-                        modifier = modifier.fillMaxWidth()
-                    )
+                    var editButtonVisibility by remember { mutableStateOf(false) }
+                    Box(
+                        modifier = modifier
+                            .onPointerEvent(PointerEventType.Enter) { editButtonVisibility = true }
+                            .onPointerEvent(PointerEventType.Exit) { editButtonVisibility = false },
+                    ) {
+                        TextGradientButton(
+                            text = gradient.name,
+                            gradient = gradient.colorStops.map { it.first to Color(it.second) },
+                            onClick = {
+                                fractalManager.setGradient(gradient.colorStops)
+                            }
+                        )
+                        EditButton(
+                            visible = editButtonVisibility,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        ) {
+                            onEdit(gradient.id, gradient.name, gradient.colorStops)
+                        }
+                    }
                 }
                 if (gradient.id < 0) { // default gradients have negative ids
                     val offsetX = remember { Animatable(0f) }
