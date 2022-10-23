@@ -30,6 +30,7 @@ import ui.gradientmaker.controller.ColorPickerController
 import ui.gradientmaker.controller.GradientSliderController
 import ui.style.FractalTheme
 
+
 @Composable
 @Preview
 fun App(
@@ -40,14 +41,25 @@ fun App(
 ) {
     FractalTheme {
         var currentFractal: FractalType by remember { mutableStateOf(MainFractals.MANDELBROT) }
-        val openDialog = remember { mutableStateOf(false) }
-        GradientMakerDialog(openDialog, colorPickerController, gradientSliderController) { name, colors ->
-            fractalManager.saveGradient(name, colors)
+        val dialogState = remember { mutableStateOf(GradientDialog.CLOSED) }
+        var editDialogIdName by remember { mutableStateOf(0 to "Name") }
+        GradientMakerDialog(
+            defaultName = if (dialogState.value == GradientDialog.CREATE) "NEW Gradient" else editDialogIdName.second,
+            openDialog = dialogState,
+            resetOnOpen = dialogState.value == GradientDialog.CREATE,
+            colorPickerController = colorPickerController,
+            gradientSliderController = gradientSliderController
+        ) { name, colors ->
+            when (dialogState.value) {
+                GradientDialog.CREATE -> fractalManager.saveGradient(name, colors)
+                GradientDialog.EDIT -> fractalManager.editGradient(editDialogIdName.first, name, colors)
+                else -> {}
+            }
         }
         Row(modifier = Modifier) {
             FractalViewPort(fractalManager)
             Column(modifier = Modifier) {
-                ToolBar(openDialog, fractalManager)
+                ToolBar(dialogState, fractalManager)
                 DropdownMenuSelector(
                     items = MainFractals.values().map { it.title() },
                     label = Localization.fractalSelectorTitle
@@ -60,7 +72,12 @@ fun App(
                         fractalFactory.changeConfiguration(JuliaFamily.values()[it])
                     }
                 }
-                GradientButtons(fractalManager)
+                GradientButtons(fractalManager,
+                    onEdit = { id, name, gradient ->
+                        gradientSliderController.setGradient(gradient)
+                        editDialogIdName = id to name
+                        dialogState.value = GradientDialog.EDIT
+                    })
             }
         }
     }
@@ -124,9 +141,12 @@ private fun FractalViewPort(fractalManager: FractalManager) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun GradientButtons(fractalManager: FractalManager) {
+private fun GradientButtons(
+    fractalManager: FractalManager,
+    onEdit: (Int, String, List<Pair<Float, Int>>) -> Unit = { _, _, _ -> },
+) {
     val items by fractalManager.gradients.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     LazyColumn(modifier = Modifier.padding(8.dp)) {
@@ -137,18 +157,22 @@ private fun GradientButtons(fractalManager: FractalManager) {
                     spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium)
                 )
             ) {
-                val button: @Composable (Modifier) -> Unit = { modifier: Modifier  ->
+                val button: @Composable (Modifier) -> Unit = { modifier: Modifier ->
                     TextGradientButton(
                         text = gradient.name,
                         gradient = gradient.colorStops.map { it.first to Color(it.second) },
                         onClick = {
                             fractalManager.setGradient(gradient.colorStops)
                         },
+                        onEdit = {
+                            onEdit.invoke(gradient.id, gradient.name, gradient.colorStops)
+                        },
+                        showEditButton = true,
                         modifier = modifier.fillMaxWidth()
                     )
                 }
                 if (gradient.id < 0) { // default gradients have negative ids
-                    val offsetX  =  remember { Animatable(0f) }
+                    val offsetX = remember { Animatable(0f) }
                     button(Modifier.shakeOnDrag(offsetX, coroutineScope))
                 } else {
                     DragToDelete(onDelete = { fractalManager.delete(gradient) }) {
@@ -162,7 +186,7 @@ private fun GradientButtons(fractalManager: FractalManager) {
 
 
 @Composable
-private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalManager) {
+private fun ToolBar(dialogState: MutableState<GradientDialog>, fractalManager: FractalManager) {
     var showFileSaveDialog by remember { mutableStateOf(false) }
     TopAppBar(
         backgroundColor = MaterialTheme.colors.background,
@@ -171,7 +195,7 @@ private fun ToolBar(openDialog: MutableState<Boolean>, fractalManager: FractalMa
         ToolBarIconButton(UndoIcon(), Localization.undo) { fractalManager.undo() }
         ToolBarIconButton(ResetIcon(), Localization.reset) { fractalManager.reset() }
         ToolBarIconButton(SaveIconOutlined(), Localization.save) { showFileSaveDialog = true }
-        ToolBarIconButton(AddGradientIcon(), Localization.create) { openDialog.value = true }
+        ToolBarIconButton(AddGradientIcon(), Localization.create) { dialogState.value = GradientDialog.CREATE }
     }
     if (showFileSaveDialog) {
         FileSaveDialog(

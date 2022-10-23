@@ -17,15 +17,17 @@ import ui.gradientmaker.controller.GradientSliderController
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GradientMakerDialog(
-    openDialog: MutableState<Boolean>,
+    defaultName: String = "NEW Gradient",
+    openDialog: MutableState<GradientDialog>,
+    resetOnOpen: Boolean = false,
     colorPickerController: ColorPickerController,
     gradientSliderController: GradientSliderController,
     dialogWidth: Dp = 420.dp,
     onConfirm: (String, List<Pair<Float, Int>>) -> Unit = { _, _ -> },
 ) {
-    if (openDialog.value) {
-        gradientSliderController.reset()
-        var gradientName by remember { mutableStateOf("NEW Gradient") }
+    if (openDialog.value != GradientDialog.CLOSED) {
+        if (resetOnOpen) gradientSliderController.reset()
+        var gradientName by remember { mutableStateOf(defaultName) }
         var showError by remember { mutableStateOf(false) }
         AlertDialog(
             modifier = Modifier.width(dialogWidth),
@@ -55,17 +57,21 @@ fun GradientMakerDialog(
                     onClick = {
                         if (showError.not()) {
                             onConfirm.invoke(gradientName, gradientSliderController.requestGradient())
-                            openDialog.value = false
+                            openDialog.value = GradientDialog.CLOSED
                         }
                     }) {
                     Text(Localization.ok)
                 }
             },
             dismissButton = {
-                Button(onClick = { openDialog.value = false }) {
+                Button(onClick = { openDialog.value = GradientDialog.CLOSED }) {
                     Text(Localization.cancel)
                 }
             }
         )
     }
+}
+
+enum class GradientDialog {
+    CLOSED, CREATE, EDIT
 }

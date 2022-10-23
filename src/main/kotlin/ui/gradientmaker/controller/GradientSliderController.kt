@@ -105,6 +105,13 @@ class GradientSliderController(
         return gradient
     }
 
+    fun setGradient(gradient: List<Pair<Float, Int>>) {
+        if (gradient.isNotEmpty()) {
+            gradientColors.clear()
+            gradient.mapTo(gradientColors) { GradientColor.Marker(it.first, Color(it.second)) }
+        }
+    }
+
     fun reset() {
         with(gradientColors) {
             clear()
@@ -114,7 +121,6 @@ class GradientSliderController(
                     GradientColor.Marker(initialColorPositions.second, colorEnd)
                 )
             )
-            // if (size > 2) removeRange(1, lastIndex)
         }
     }
 
@@ -138,7 +144,6 @@ class GradientSliderController(
     }
 
     private fun sliderMinMax(size: Size): Offset {
-//        val padding = size.height / 2
         val padding = 0f
         return Offset(padding, size.width - padding)
     }

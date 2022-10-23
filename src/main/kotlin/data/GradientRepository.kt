@@ -21,20 +21,25 @@ class GradientRepository(
     }
 
     fun save(gradientData: GradientData) {
-        coroutineScope.launch {
-            persistedGradients.save(gradientData)
-            refresh()
-        }
+        executeAndRefresh { persistedGradients.save(gradientData) }
     }
 
     fun delete(gradientData: GradientData) {
-        coroutineScope.launch {
-            persistedGradients.delete(gradientData)
-            refresh()
-        }
+        executeAndRefresh { persistedGradients.delete(gradientData) }
+    }
+
+    fun edit(gradientData: GradientData) {
+        executeAndRefresh { persistedGradients.edit(gradientData) }
     }
 
     private suspend fun refresh() {
         _gradients.value = persistedGradients.readAll() + defaultGradients.readAll()
+    }
+
+    private fun executeAndRefresh(action: suspend () -> Unit) {
+        coroutineScope.launch {
+            action()
+            refresh()
+        }
     }
 }

@@ -22,10 +22,12 @@ class ExposedDao : DAO {
 
     override suspend fun editGradient(id: Int, name: String, colors: List<Pair<Float, Int>>): Boolean {
         val gradient = GradientDB.findById(id)
-        gradient?.let { grad ->
-            grad.name = name
-            Colors.deleteWhere { Colors.gradient eq grad.id }
-            colors.forEach { createColor(it, grad) }
+        if (gradient == null) {
+            addGradient(name, colors)
+        } else {
+            gradient.name = name
+            Colors.deleteWhere { Colors.gradient eq gradient.id }
+            colors.forEach { createColor(it, gradient) }
         }
         return gradient != null
     }

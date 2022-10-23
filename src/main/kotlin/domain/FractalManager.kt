@@ -210,6 +210,10 @@ class FractalManager(
         gradientRepository.delete(gradient)
     }
 
+    fun editGradient(id: Int, name: String, colors: List<Pair<Float, Int>>) {
+        gradientRepository.edit(GradientData(name, colors, id))
+    }
+
     init {
         setGradient(gradients.value[0].colorStops)
     }
