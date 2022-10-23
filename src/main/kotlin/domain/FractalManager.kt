@@ -1,6 +1,9 @@
 package domain
 
-import data.*
+import data.CanvasState
+import data.CanvasStateHolder
+import data.GradientData
+import data.GradientRepository
 import data.fractal.Mandelbrot
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,8 +13,6 @@ import presenter.RangeRemapper
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.File
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
 
 private const val WIDTH = 1000
@@ -44,7 +45,7 @@ class FractalManager(
 
     val image = MutableStateFlow(buffer).asStateFlow()
 
-    private val randomPixelCombinations = preparePixels(buffer.width, buffer.height)
+    private val randomPixelCombinationsChunks = preparePixels(buffer.width, buffer.height)
 
 
     fun setScroll(direction: Float, x: Int, y: Int) {
@@ -84,11 +85,11 @@ class FractalManager(
         }
     }
 
-    @OptIn(ExperimentalTime::class)
+    //@OptIn(ExperimentalTime::class)
     private fun CoroutineScope.computeRandomPixels(image: BufferedImage = buffer) {
         val state = canvasStateHolder.state()
-        val (_, duration) = measureTimedValue {
-            randomPixelCombinations.forEach { chunk ->
+        //val (_, duration) = measureTimedValue {
+            randomPixelCombinationsChunks.forEach { chunk ->
                 launch {
                     for (i in chunk.indices step 2) {
                         if (!isActive) return@launch
@@ -97,8 +98,8 @@ class FractalManager(
                     _invalidator.value--
                 }
             }
-        }
-        println("Generation time is $duration")
+        //}
+        //println("Generation time is $duration")
     }
 
     private fun CoroutineScope.computeSequentialPixels(image: BufferedImage) {
@@ -200,11 +201,10 @@ class FractalManager(
 
     private fun preparePixels(width: Int, height: Int) = (0 until height).asSequence()
         .cartesianProduct((0 until width).asSequence())
-        .toList()
         .shuffled()
         .chunked(1000) { it ->
             it.flatten().toIntArray()
-        }.toTypedArray()
+        }.toList()
 
     fun delete(gradient: GradientData) {
         gradientRepository.delete(gradient)

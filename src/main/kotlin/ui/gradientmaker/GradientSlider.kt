@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -45,24 +44,14 @@ fun GradientSlider(
 ) {
     var clickTime by remember { mutableStateOf(0L) }
     var selectedState by remember { mutableStateOf(MarkerState.IDLE) }
-    var transitionSelected = updateTransition(selectedState)
+    val transitionSelected = updateTransition(selectedState)
     val markerRadiusSelected by transitionSelected.animateDp(
         transitionSpec = { spring(stiffness = Spring.StiffnessMedium, dampingRatio = Spring.DampingRatioMediumBouncy) }
     ) { state ->
         if (state == MarkerState.SELECTED) pickerRadius else pickerRadiusMin
     }
-    val markerRadiusDeselected by transitionSelected.animateDp { state ->
-        if (state == MarkerState.SELECTED) pickerRadiusMin else pickerRadius
-    }
-    var runOnce by remember { mutableStateOf(true) }
     Box(
         Modifier.padding(vertical = 8.dp, horizontal = 0.dp)
-            .onSizeChanged {
-                if (runOnce) {
-                    gradientController.updateInitialColorsPositions(it.toSize())
-                    runOnce = false
-                }
-            }
     ) {
         var verticalPosition by remember { mutableStateOf(0f) }
         Canvas(modifier = Modifier.fillMaxWidth().height(sliderHeight)

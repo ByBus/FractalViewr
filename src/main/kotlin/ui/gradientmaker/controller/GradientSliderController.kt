@@ -38,16 +38,6 @@ class GradientSliderController(
         setGradientColor(foundGradientColor)
     }
 
-    fun updateInitialColorsPositions(size: Size) {
-//        with(gradientColors) {
-//            val firstColorPosition = size.height / 2 / size.width
-//            val secondColorPosition = (size.width - size.height / 2) / size.width
-//            this[0] = first().copy(position = firstColorPosition)
-//            this[lastIndex] = last().copy(position = secondColorPosition)
-//            initialColorPositions = Pair(firstColorPosition, secondColorPosition)
-//            println(" $initialColorPositions")
-//        }
-    }
     private fun findIn(positionMin: Float, positionMax: Float): GradientColor {
         return gradientColors.filter { it.position in positionMin..positionMax }
             .minByOrNull { abs(it.position - (positionMin + positionMax) * 0.5f) }
@@ -98,7 +88,7 @@ class GradientSliderController(
         gradientColors.filter { it !in except }.forEach { it.setSelection(false) }
     }
 
-    fun requestGradient(): MutableList<Pair<Float, Int>> {
+    fun requestGradient(): List<Pair<Float, Int>> {
         val gradient =
             gradientColors
                 .sortedBy { it.position }

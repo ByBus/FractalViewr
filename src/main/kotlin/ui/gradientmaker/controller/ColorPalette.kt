@@ -4,8 +4,6 @@ import ui.gradientmaker.ColorProducer
 import java.awt.GradientPaint
 import java.awt.Point
 import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 import java.awt.Color as AwtColor
 
 class ColorPalette : ColorProducer {
@@ -64,12 +62,6 @@ class ColorPalette : ColorProducer {
         g2.paint = gradientPaint
         g2.fillRect(from.x, from.y, to.x, to.y)
         g2.dispose()
-    }
-
-    private fun saveBufferedImage() {
-        val outputfile = File("image.png")
-        println(outputfile.absolutePath)
-        ImageIO.write(bufferedImage, "png", outputfile)
     }
 
     init {
