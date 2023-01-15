@@ -25,6 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import data.GradientData
 import domain.*
 import ui.gradientmaker.controller.ColorPickerController
 import ui.gradientmaker.controller.GradientSliderController
@@ -35,7 +36,7 @@ import ui.style.FractalTheme
 @Preview
 fun App(
     fractalManager: FractalManager,
-    fractalFactory: FractalFactory,
+    configurator: Configurator,
     colorPickerController: ColorPickerController,
     gradientSliderController: GradientSliderController,
 ) {
@@ -44,6 +45,7 @@ fun App(
         val dialogState = remember { mutableStateOf(GradientDialog.CLOSED) }
         var editDialogIdName by remember { mutableStateOf(0 to "Name") }
         val creationMode = dialogState.value == GradientDialog.CREATE
+        val familyFactory by fractalManager.familyFactory.collectAsState()
         GradientMakerDialog(
             defaultName = if (creationMode) "NEW Gradient" else editDialogIdName.second,
             openDialog = dialogState,
@@ -66,12 +68,17 @@ fun App(
                     label = Localization.fractalSelectorTitle
                 ) {
                     currentFractal = MainFractals.values()[it]
-                    fractalFactory.changeConfiguration(currentFractal)
+                    configurator.changeConfiguration(currentFractal)
+                    fractalManager.changeFamilyFractalsFactoryOf(currentFractal)
                 }
-                AppearanceAnimated(currentFractal == MainFractals.JULIA) {
-                    DropdownMenuSelector(JuliaFamily.values().map { it.title() }, label = Localization.juliaConstant) {
-                        fractalFactory.changeConfiguration(JuliaFamily.values()[it])
-                    }
+                AppearanceAnimated(currentFractal.hasFamilyOfFractals()) {
+                    DropdownMenuSelector(
+                        items = familyFactory.types().map { it.title() },
+                        label = familyFactory.familyName,
+                        onSelect = { position ->
+                            configurator.changeConfiguration(familyFactory.types()[position])
+                        }
+                    )
                 }
                 GradientButtons(fractalManager,
                     onEdit = { id, name, gradient ->
@@ -158,7 +165,7 @@ private fun FractalViewPort(fractalManager: FractalManager) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun GradientButtons(
     fractalManager: FractalManager,
@@ -174,32 +181,46 @@ private fun GradientButtons(
                     spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium)
                 )
             ) {
-                val button: @Composable (Modifier) -> Unit = { modifier: Modifier ->
-                    var editButtonVisibility by remember { mutableStateOf(false) }
-                    Box(
-                        modifier = modifier
-                            .onPointerEvent(PointerEventType.Enter) { editButtonVisibility = true }
-                            .onPointerEvent(PointerEventType.Exit) { editButtonVisibility = false },
-                    ) {
-                        TextGradientButton(
-                            text = gradient.name,
-                            gradient = gradient.colorStops.map { it.first to Color(it.second) },
-                            onClick = { fractalManager.setGradient(gradient.colorStops) }
-                        )
-                        AppearanceAnimated(editButtonVisibility, Modifier.align(Alignment.CenterStart).offset(x = 8.dp)){
-                            EditButton { onEdit(gradient.id, gradient.name, gradient.colorStops) }
-                        }
-                    }
-                }
                 if (gradient.id < 0) { // default gradients have negative ids
                     val offsetX = remember { Animatable(0f) }
-                    button(Modifier.shakeOnDrag(offsetX, coroutineScope))
+                    GradientButtonWithEdit(
+                        gradient,
+                        fractalManager,
+                        Modifier.shakeOnDrag(offsetX, coroutineScope),
+                        onEdit
+                    )
                 } else {
                     DragToDelete(onDelete = { fractalManager.delete(gradient) }) {
-                        button(Modifier)
+                        GradientButtonWithEdit(gradient, fractalManager, onEdit = onEdit)
                     }
                 }
             }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun GradientButtonWithEdit(
+    gradient: GradientData,
+    fractalManager: FractalManager,
+    modifier: Modifier = Modifier,
+    onEdit: (Int, String, List<Pair<Float, Int>>) -> Unit,
+) {
+    var editButtonVisibility by remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier
+            .onPointerEvent(PointerEventType.Enter) { editButtonVisibility = true }
+            .onPointerEvent(PointerEventType.Exit) { editButtonVisibility = false },
+    ) {
+        TextGradientButton(
+            text = gradient.name,
+            gradient = gradient.colorStops.map { it.first to Color(it.second) },
+            onClick = { fractalManager.setGradient(gradient.colorStops) }
+        )
+        AppearanceAnimated(editButtonVisibility, Modifier.align(Alignment.CenterStart).offset(x = 8.dp)) {
+            EditButton { onEdit(gradient.id, gradient.name, gradient.colorStops) }
         }
     }
 }

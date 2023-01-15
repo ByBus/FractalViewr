@@ -2,23 +2,19 @@ package domain
 
 import data.CanvasState
 import data.fractal.*
+import data.fractal.newtonfunction.*
+import domain.factory.JuliaFactory
+import domain.factory.NewtonFactory
 
-class FractalFactory(private val fractalManager: FractalManager) {
+class Configurator(private val fractalManager: FractalManager) {
     fun changeConfiguration(type: FractalType) {
         val (fractal, state) = when (type) {
             MainFractals.JULIA -> Julia() to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            is JuliaFamily -> {
-                val juliaFractal = type.map { r, i ->
-                    if (type == JuliaFamily.JULIA_CUBIC)
-                        JuliaCubic(realC = r, imaginaryC = i)
-                    else
-                        Julia(realC = r, imaginaryC = i)
-                }
-                juliaFractal to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            }
-
+            is JuliaFamily -> JuliaFactory().create(type) to CanvasState(-1.5, 1.5, -1.5, 1.5)
             MainFractals.BURNING_SHIP -> BurningShip() to CanvasState(-2.2, 1.3, -2.0, 1.0)
             MainFractals.PHOENIX -> Phoenix() to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            MainFractals.NEWTON -> Newton(function = ZCubeMinusOne()) to CanvasState(-2.0, 2.0, -2.0, 2.0)
+            is NewtonFamily -> NewtonFactory().create(type) to CanvasState(-2.0, 2.0, -2.0, 2.0)
             MainFractals.LINES -> Lines() to CanvasState(-1.5, 1.5, -1.5, 1.5)
             else -> Mandelbrot() to CanvasState(-2.0, 1.0, -1.5, 1.5)
         }
@@ -28,16 +24,20 @@ class FractalFactory(private val fractalManager: FractalManager) {
 
 interface FractalType {
     fun title(): String
+    fun hasFamilyOfFractals(): Boolean
 }
 
-enum class MainFractals(private val title: String) : FractalType {
+enum class MainFractals(private val title: String, private val family: Boolean = false) : FractalType {
     MANDELBROT("Mandelbrot"),
-    JULIA("Julia"),
+    JULIA("Julia", true),
     BURNING_SHIP("Burning Ship"),
     PHOENIX("Phoenix"),
+    NEWTON("Newton", true),
     LINES("Lines");
 
     override fun title(): String = title
+
+    override fun hasFamilyOfFractals() = family
 }
 
 enum class JuliaFamily(
@@ -61,5 +61,23 @@ enum class JuliaFamily(
     fun <T> map(mapper: (Double, Double) -> T): T {
         return mapper(realC, imaginaryC)
     }
+
+    override fun hasFamilyOfFractals() = false
 }
+
+enum class NewtonFamily(
+    private val title: String,
+) : FractalType {
+    NEWTON1("z^3 - 1"),
+    NEWTON2("z^3 - 2z + 2"),
+    NEWTON3("2z^4 + z^3 - 1"),
+    NEWTON4("z^6 - 1"),
+    NEWTON5("z^8 + 15z^4 - 16"),
+    NEWTON6("z^5 + z^3 + 10");
+
+    override fun title() = title
+    override fun hasFamilyOfFractals() = false
+}
+
+
 

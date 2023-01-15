@@ -19,7 +19,7 @@ import java.awt.Cursor
 @Composable
 fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: String, modifier: Modifier = Modifier, onSelect: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(items[initialSelection]) }
+    var selectedPosition by remember { mutableStateOf(items[initialSelection]) }
     var dropDownWidth by remember { mutableStateOf(0) }
     val iconLess = ExpandLess()
     val iconMore = ExpandMore()
@@ -29,7 +29,7 @@ fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: 
 
     Column(modifier = modifier.padding(8.dp)) {
         OutlinedTextField(
-            value = selectedText.uppercase(),
+            value = if (items.contains(selectedPosition)) selectedPosition.uppercase() else items[0].uppercase(),
             onValueChange = { },
             modifier = Modifier.fillMaxWidth()
                 .pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)), true)
@@ -62,19 +62,20 @@ fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: 
             modifier = Modifier
                 .width(with(LocalDensity.current) { dropDownWidth.toDp() })
         ) {
-            items.forEachIndexed{ index, label ->
+            items.forEachIndexed{ index, itemText ->
+                if (index == 0 && items.contains(selectedPosition).not()) selectedPosition = itemText
                 DropdownMenuItem(
                     onClick = {
-                        selectedText = label
+                        selectedPosition = itemText
                         expanded = false
                         onSelect.invoke(index)
                     },
-                    modifier = if (selectedText == label) Modifier.background(MaterialTheme.colors.secondary) else Modifier
+                    modifier = if (selectedPosition == itemText) Modifier.background(MaterialTheme.colors.secondary) else Modifier
                 ) {
                     Text(
-                        text = label,
+                        text = itemText,
                         style = MaterialTheme.typography.h6,
-                        color = if (selectedText == label) MaterialTheme.colors.onPrimary else Color.Unspecified
+                        color = if (selectedPosition == itemText) MaterialTheme.colors.onPrimary else Color.Unspecified
                     )
                 }
             }

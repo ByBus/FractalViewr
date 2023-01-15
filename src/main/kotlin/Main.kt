@@ -29,7 +29,7 @@ fun main() {
         ) {
             App(
                 fractalManager = getKoin().get(),
-                fractalFactory = getKoin().get(),
+                configurator = getKoin().get(),
                 colorPickerController = getKoin().get(),
                 gradientSliderController = getKoin().get()
             )

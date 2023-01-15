@@ -6,7 +6,9 @@ import data.local.ExposedGradients
 import data.local.exposed.DAO
 import data.local.exposed.ExposedDao
 import domain.*
+import domain.factory.FractalFamilyFactoryMaker
 import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import presenter.*
@@ -22,7 +24,7 @@ val mainModule = module(createdAtStart = true) {
     singleOf(::FractalManager)
     single<RangeRemapper<Int, Double>> { IntDoubleReMapper() }
 
-    single<Interpolator<Color>> { AwtColorInterpolator() }
+    factory<Interpolator<Color>> { AwtColorInterpolator() }
     single<Palette<Int>> { IntColorPalette(255, get()) }
 
     singleOf(::DefaultGradients) { bind<DataSource<GradientData>>() }
@@ -32,13 +34,15 @@ val mainModule = module(createdAtStart = true) {
 
     single<FileSaver<BufferedImage>> { ImageSaver() }
 
-    singleOf(::FractalFactory)
+    singleOf(::Configurator)
+
+    factoryOf(::FractalFamilyFactoryMaker)
 }
 
 
 val gradientMakerModule = module {
-    singleOf(::ColorPickerController)
-    singleOf(::CoordinateConverter)
-    single { GradientSliderController() }
-    singleOf(::ColorPalette) { bind<ColorProducer>() }
+    factoryOf(::ColorPickerController)
+    factoryOf(::CoordinateConverter)
+    factory { GradientSliderController() }
+    factoryOf(::ColorPalette) { bind<ColorProducer>() }
 }

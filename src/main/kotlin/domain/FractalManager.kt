@@ -5,6 +5,8 @@ import data.CanvasStateHolder
 import data.GradientData
 import data.GradientRepository
 import data.fractal.Mandelbrot
+import domain.factory.FractalFamilyFactoryMaker
+import domain.factory.JuliaFactory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +30,7 @@ class FractalManager(
     private val palette: Palette<Int>,
     private val gradientRepository: GradientRepository,
     private val imageFileSaver: FileSaver<BufferedImage>,
+    private val familyFactoryMaker: FractalFamilyFactoryMaker
 ) {
     private var job: Job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -47,6 +50,14 @@ class FractalManager(
 
     private val randomPixelCombinationsChunks = preparePixels(buffer.width, buffer.height)
 
+    private val _familyFactory = MutableStateFlow<ConcreteFactory<*>>(JuliaFactory())
+    val familyFactory = _familyFactory.asStateFlow()
+
+    fun changeFamilyFractalsFactoryOf(fractalType: FractalType) {
+        if (fractalType.hasFamilyOfFractals()) {
+            _familyFactory.value = familyFactoryMaker.create(fractalType)
+        }
+    }
 
     fun setScroll(direction: Float, x: Int, y: Int) {
         val state = canvasStateHolder.state()
