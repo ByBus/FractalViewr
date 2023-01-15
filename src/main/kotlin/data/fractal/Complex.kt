@@ -1,10 +1,15 @@
 package data.fractal
 
+import kotlin.math.atan2
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.math.cos as cosine
 import kotlin.math.exp as exponent
 import kotlin.math.sin as sinus
 
-internal class Complex(var real: Double, var img: Double) {
+class Complex(var real: Double, var img: Double) {
+    operator fun component1() = real
+    operator fun component2() = img
     fun set(real: Double = real(), img: Double = imag()) {
         this.real = real
         this.img = img
@@ -18,64 +23,70 @@ internal class Complex(var real: Double, var img: Double) {
         return img
     }
 
-    fun abs(): Double {
+    fun absSquared(): Double {
         return real * real + img * img
     }
 
-    operator fun plus(p: Complex): Complex {
-        real += p.real()
-        img += p.imag()
+    fun abs(): Double {
+        return sqrt(absSquared())
+    }
+
+    operator fun plus(other: Complex): Complex {
+        real += other.real()
+        img += other.imag()
         return this
     }
 
-    operator fun plus(p: Double): Complex {
-        real += p
+    operator fun plus(other: Double): Complex {
+        real += other
         return this
     }
 
-    operator fun plus(p: Int): Complex {
-        real += p.toDouble()
+    operator fun plus(other: Int): Complex {
+        real += other.toDouble()
         return this
     }
 
-    operator fun minus(p: Complex): Complex {
-        real -= p.real()
-        img -= p.imag()
+    operator fun minus(other: Complex): Complex {
+        real -= other.real()
+        img -= other.imag()
         return this
     }
 
-    operator fun minus(p: Double): Complex {
-        real -= p
+    operator fun minus(other: Double): Complex {
+        real -= other
         return this
     }
 
-    operator fun minus(p: Int): Complex {
-        real -= p.toDouble()
+    operator fun minus(other: Int): Complex {
+        real -= other.toDouble()
         return this
     }
 
-    operator fun times(p: Double): Complex {
-        real *= p
-        img *= p
+    operator fun times(other: Double): Complex {
+        real *= other
+        img *= other
         return this
     }
 
-    operator fun times(p: Int): Complex {
-        real *= p.toDouble()
-        img *= p.toDouble()
+    operator fun times(other: Int): Complex {
+        real *= other.toDouble()
+        img *= other.toDouble()
         return this
     }
 
-    operator fun times(p: Complex): Complex {
-        real = real * p.real() - img * p.imag()
-        img = img * p.real() + real * p.imag()
+    operator fun times(other: Complex): Complex {
+        val r = real * other.real() - img * other.imag()
+        val i = img * other.real() + real * other.imag()
+        set(r, i)
         return this
     }
 
-    operator fun div(p: Complex): Complex {
-        val tmp = p.abs()
-        real = (real * p.real() + img * p.imag()) / tmp
-        img = (img * p.real() - real * p.imag()) / tmp
+    operator fun div(other: Complex): Complex {
+        val tmp = other.absSquared()
+        val r = (real * other.real() + img * other.imag()) / tmp
+        val i = (img * other.real() - real * other.imag()) / tmp
+        set(r, i)
         return this
     }
 
@@ -85,9 +96,9 @@ internal class Complex(var real: Double, var img: Double) {
     }
 
     fun cube(): Complex {
-        val r2 = real * real
-        val i2 = img * img
-        set(real * (r2 - 3 * i2), img * (3 * r2 - i2))
+        val r = real * real
+        val i = img * img
+        set(real * (r - 3 * i), img * (3 * r - i))
         return this
     }
 
@@ -111,36 +122,70 @@ internal class Complex(var real: Double, var img: Double) {
         return this
     }
 
-    fun sqr(p: Complex): Complex {
-        real = p.real() * p.real() - p.imag() * p.imag()
-        img = 2 * p.real() * p.imag()
+    fun sqr(other: Complex): Complex {
+        real = other.real() * other.real() - other.imag() * other.imag()
+        img = 2 * other.real() * other.imag()
         return this
     }
 
-    fun cube(p: Complex): Complex {
-        val r2 = p.real() * p.real()
-        val i2 = p.imag() * p.imag()
-        set(p.real() * (r2 - 3 * i2), p.imag() * (3 * r2 - i2))
+    fun cube(other: Complex): Complex {
+        val r = other.real() * other.real()
+        val i = other.imag() * other.imag()
+        set(other.real() * (r - 3 * i), other.imag() * (3 * r - i))
         return this
     }
 
-    fun exp(p: Complex): Complex {
-        val e1 = exponent(p.real())
-        set(e1 * cosine(p.imag()), e1 * sinus(p.imag()))
+    fun exp(other: Complex): Complex {
+        val e = exponent(other.real())
+        set(e * cosine(other.imag()), e * sinus(other.imag()))
         return this
     }
 
-    fun sin(p: Complex): Complex {
-        val e1 = exponent(p.imag())
+    fun sin(other: Complex): Complex {
+        val e1 = exponent(other.imag())
         val e2 = 1 / e1
-        set(sinus(p.real()) * (e1 + e2) / 2, cosine(p.real()) * (e1 - e2) / 2)
+        set(sinus(other.real()) * (e1 + e2) / 2, cosine(other.real()) * (e1 - e2) / 2)
         return this
     }
 
-    fun cos(p: Complex): Complex {
-        val e1 = exponent(p.imag())
+    fun cos(other: Complex): Complex {
+        val e1 = exponent(other.imag())
         val e2 = 1 / e1
-        set(cosine(p.real()) * (e1 + e2) / 2, -sinus(p.real()) * (e1 - e2) / 2)
+        set(cosine(other.real()) * (e1 + e2) / 2, -sinus(other.real()) * (e1 - e2) / 2)
         return this
+    }
+
+    fun copy(r: Double = real, i: Double = img): Complex = Complex(r, i)
+
+    fun pow(z1: Complex, z2: Double): Complex {
+        val r = sqrt(z1.absSquared()).pow(z2)
+        val theta: Double = z2 * z1.arg(this)
+        return Complex(cosine(theta) * r, sinus(theta) * r)
+    }
+
+    private fun arg(z: Complex): Double {
+        return atan2(z.img, z.real)
+    }
+
+    fun pow(n: Double): Complex {
+        return pow(this, n)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Complex
+
+        if (real != other.real) return false
+        if (img != other.img) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = real.hashCode()
+        result = 31 * result + img.hashCode()
+        return result
     }
 }

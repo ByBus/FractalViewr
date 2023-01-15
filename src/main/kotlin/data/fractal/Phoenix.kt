@@ -13,7 +13,7 @@ class Phoenix(
         val c = Complex(p, c)
         val temp = Complex(z.real, z.img)
         var iteration = 0
-        while (z.abs() <= 4 && iteration < maxIterations) {
+        while (z.absSquared() <= 4 && iteration < maxIterations) {
             temp.set(real = z.real, img = z.img)
             z.sqr() + c.img + zPrev * c.real
             zPrev.set(temp.real, temp.img)

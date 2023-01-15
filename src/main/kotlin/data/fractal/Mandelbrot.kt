@@ -7,7 +7,7 @@ class Mandelbrot(private val maxIterations: Int = 255) : Fractal {
         val z = Complex(0.0, 0.0)
         val c = Complex(x0, y0)
         var iteration = 0
-        while (z.abs() <= 4 && iteration < maxIterations) {
+        while (z.absSquared() <= 4 && iteration < maxIterations) {
             z.sqr() + c
             iteration++
         }

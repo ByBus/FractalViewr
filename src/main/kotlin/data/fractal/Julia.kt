@@ -11,7 +11,7 @@ class Julia(
         val z = Complex(x0, y0)
         val c = Complex(realC, imaginaryC)
         var iteration = 0
-        while (z.abs() <= 4 && iteration < maxIterations) {
+        while (z.absSquared() <= 4 && iteration < maxIterations) {
             z.sqr() + c
             iteration++
         }

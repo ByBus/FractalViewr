@@ -12,7 +12,7 @@ class Lines(
         var z = Complex(y0, x0)
         val c = Complex(p, c)
         var iteration = 0
-        while (z.abs() <= 4 && iteration < maxIterations) {
+        while (z.absSquared() <= 4 && iteration < maxIterations) {
             val temp = Complex(z.img, z.real)
             z = z.sqr() + c.real + zPrev * c.img
             zPrev = temp
