@@ -27,7 +27,7 @@ fun FileSaveDialog(
     if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
         val file = fileChooser.selectedFile
         val name = file.name.substringBeforeLast(".")
-        val oldExtension = file.name.substringBeforeLast(".")
+        val oldExtension = file.name.substringAfterLast(".")
         val extension = if (formats.any { it.equals(oldExtension, ignoreCase = true) }) oldExtension else formats[0]
         val fileWithExt = File(file.parent, "$name.$extension")
         onResult(fileWithExt)
