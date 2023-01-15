@@ -45,7 +45,7 @@ fun App(
         val dialogState = remember { mutableStateOf(GradientDialog.CLOSED) }
         var editDialogIdName by remember { mutableStateOf(0 to "Name") }
         val creationMode = dialogState.value == GradientDialog.CREATE
-        val familyFactory by fractalManager.familyFactory.collectAsState()
+        val fractalFamily by fractalManager.fractalFamily.collectAsState()
         GradientMakerDialog(
             defaultName = if (creationMode) "NEW Gradient" else editDialogIdName.second,
             openDialog = dialogState,
@@ -69,14 +69,14 @@ fun App(
                 ) {
                     currentFractal = MainFractals.values()[it]
                     configurator.changeConfiguration(currentFractal)
-                    fractalManager.changeFamilyFractalsFactoryOf(currentFractal)
+                    fractalManager.setFractalFamilyOf(currentFractal)
                 }
                 AppearanceAnimated(currentFractal.hasFamilyOfFractals()) {
                     DropdownMenuSelector(
-                        items = familyFactory.types().map { it.title() },
-                        label = familyFactory.familyName,
+                        items = fractalFamily.types().map { it.title() },
+                        label = fractalFamily.familyName,
                         onSelect = { position ->
-                            configurator.changeConfiguration(familyFactory.types()[position])
+                            configurator.changeConfiguration(fractalFamily.types()[position])
                         }
                     )
                 }

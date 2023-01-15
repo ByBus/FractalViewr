@@ -6,6 +6,7 @@ import data.local.ExposedGradients
 import data.local.exposed.DAO
 import data.local.exposed.ExposedDao
 import domain.*
+import domain.factory.FactoryMaker
 import domain.factory.FractalFamilyFactoryMaker
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
@@ -36,7 +37,7 @@ val mainModule = module(createdAtStart = true) {
 
     singleOf(::Configurator)
 
-    factoryOf(::FractalFamilyFactoryMaker)
+    factoryOf(::FractalFamilyFactoryMaker) { bind<FactoryMaker<FractalType>>() }
 }
 
 

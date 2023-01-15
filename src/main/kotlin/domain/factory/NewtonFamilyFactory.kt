@@ -3,11 +3,9 @@ package domain.factory
 import Localization
 import data.fractal.Newton
 import data.fractal.newtonfunction.*
-import domain.ConcreteFactory
-import domain.Fractal
-import domain.NewtonFamily
+import domain.*
 
-class NewtonFactory(override val familyName: String = Localization.newtonEquation) : ConcreteFactory<NewtonFamily> {
+class NewtonFamilyFactory(override val familyName: String = Localization.newtonEquation) : ConcreteFactory<NewtonFamily> {
     override fun create(type: NewtonFamily): Fractal {
         val equation = when (type) {
             NewtonFamily.NEWTON1 -> ZCubeMinusOne()
@@ -22,5 +20,16 @@ class NewtonFactory(override val familyName: String = Localization.newtonEquatio
 
     override fun types(): Array<NewtonFamily> {
         return NewtonFamily.values()
+    }
+}
+
+class NewtonFactory(private val newtonFamilyFactory: ConcreteFactory<NewtonFamily>) : ConcreteFactory<FractalType> {
+    override val familyName: String
+        get() = newtonFamilyFactory.familyName
+
+    override fun types(): Array<out NewtonFamily> = newtonFamilyFactory.types()
+
+    override fun create(type: FractalType): Fractal {
+        return if (type is NewtonFamily) newtonFamilyFactory.create(type) else create(NewtonFamily.NEWTON1)
     }
 }

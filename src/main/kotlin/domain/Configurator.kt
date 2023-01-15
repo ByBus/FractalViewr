@@ -1,20 +1,19 @@
 package domain
 
 import data.CanvasState
-import data.fractal.*
-import data.fractal.newtonfunction.*
-import domain.factory.JuliaFactory
-import domain.factory.NewtonFactory
+import data.fractal.BurningShip
+import data.fractal.Lines
+import data.fractal.Mandelbrot
+import data.fractal.Phoenix
+import domain.factory.FactoryMaker
 
-class Configurator(private val fractalManager: FractalManager) {
+class Configurator(private val fractalManager: FractalManager, private val factoryMaker: FactoryMaker<FractalType>) {
     fun changeConfiguration(type: FractalType) {
         val (fractal, state) = when (type) {
-            MainFractals.JULIA -> Julia() to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            is JuliaFamily -> JuliaFactory().create(type) to CanvasState(-1.5, 1.5, -1.5, 1.5)
+            is JuliaFamily, MainFractals.JULIA -> factoryMaker.create(type).create(type) to CanvasState(-1.5, 1.5, -1.5, 1.5)
             MainFractals.BURNING_SHIP -> BurningShip() to CanvasState(-2.2, 1.3, -2.0, 1.0)
             MainFractals.PHOENIX -> Phoenix() to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            MainFractals.NEWTON -> Newton(function = ZCubeMinusOne()) to CanvasState(-2.0, 2.0, -2.0, 2.0)
-            is NewtonFamily -> NewtonFactory().create(type) to CanvasState(-2.0, 2.0, -2.0, 2.0)
+            is NewtonFamily, MainFractals.NEWTON -> factoryMaker.create(type).create(type) to CanvasState(-2.0, 2.0, -2.0, 2.0)
             MainFractals.LINES -> Lines() to CanvasState(-1.5, 1.5, -1.5, 1.5)
             else -> Mandelbrot() to CanvasState(-2.0, 1.0, -1.5, 1.5)
         }

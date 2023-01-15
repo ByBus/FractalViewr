@@ -3,12 +3,21 @@ package domain.factory
 import domain.ConcreteFactory
 import domain.FractalType
 import domain.MainFractals
+import domain.NewtonFamily
 
-class FractalFamilyFactoryMaker {
-    fun create(type: FractalType): ConcreteFactory<*> {
+class FractalFamilyFactoryMaker : FactoryMaker<FractalType> {
+    override fun defaultFactory() = JuliaFamilyFactory()
+    override fun create(type: FractalType): ConcreteFactory<FractalType> {
         return when (type) {
-            MainFractals.NEWTON -> NewtonFactory()
-            else -> JuliaFactory()
+            MainFractals.NEWTON, is NewtonFamily -> NewtonFactory(NewtonFamilyFactory())
+            else -> JuliaFactory(defaultFactory())
         }
     }
+}
+
+
+interface FactoryMaker<T: FractalType> {
+    fun defaultFactory() : ConcreteFactory<out T>
+
+    fun create(type: T): ConcreteFactory<T>
 }
