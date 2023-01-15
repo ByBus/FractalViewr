@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation(compose.desktop.currentOs)
+    implementation(compose.desktop.windows_x64)
     testImplementation("junit:junit:4.13.1")
 
     // Koin
@@ -30,6 +30,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
+    testImplementation("junit:junit:4.13.1")
 }
 
 tasks.test {
