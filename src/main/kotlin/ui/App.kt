@@ -135,8 +135,8 @@ private fun FractalViewPort(fractalManager: FractalManager) {
     val invalidate by fractalManager.invalidator.collectAsState()
     var dragInitPosition = remember { Offset(0f, 0f) }
     Canvas(modifier = Modifier
-        .width(canvasImg.width.dp)
-        .height(canvasImg.height.dp)
+        .requiredWidth(canvasImg.width.dp)
+        .requiredHeight(canvasImg.height.dp)
         .onPointerEvent(PointerEventType.Scroll) {
             with(it.changes.first()) {
                 fractalManager.setScroll(scrollDelta.y, position.x.toInt(), position.y.toInt())

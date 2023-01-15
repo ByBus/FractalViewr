@@ -45,9 +45,13 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
+            modules("java.sql")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "FractalViewr"
             packageVersion = "1.0.0"
+            windows {
+                iconFile.set(project.file("mandelbrot_icon.ico"))
+            }
         }
     }
 }
