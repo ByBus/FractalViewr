@@ -8,9 +8,13 @@ import data.local.exposed.ExposedDao
 import domain.*
 import domain.factory.FactoryMaker
 import domain.factory.FractalFamilyFactoryMaker
+import domain.imageprocessing.FinalImageProcessor
+import domain.imageprocessing.FractalImageProcessor
+import domain.imageprocessing.PreviewProcessor
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import presenter.*
 import ui.gradientmaker.ColorProducer
@@ -22,7 +26,13 @@ import java.awt.Color
 import java.awt.image.BufferedImage
 
 val mainModule = module(createdAtStart = true) {
-    singleOf(::FractalManager)
+    single {
+        FractalManager(
+            get(), get(), get(), get(), get(),
+            finalImageProcessor = get(named("final_image")),
+            previewImageProcessor = get(named("preview_image"))
+        )
+    }
     single<RangeRemapper<Int, Double>> { IntDoubleReMapper() }
 
     factory<Interpolator<Color>> { AwtColorInterpolator() }
@@ -38,6 +48,24 @@ val mainModule = module(createdAtStart = true) {
     singleOf(::Configurator)
 
     factoryOf(::FractalFamilyFactoryMaker) { bind<FactoryMaker<FractalType>>() }
+
+    factory<FractalImageProcessor>(named("final_image")) {
+        FinalImageProcessor(
+            width = 1000,
+            height = 1000,
+            get(),
+            get()
+        )
+    }
+
+    factory<FractalImageProcessor>(named("preview_image")) {
+        PreviewProcessor(
+            width = 200,
+            height = 200,
+            get(),
+            get()
+        )
+    }
 }
 
 

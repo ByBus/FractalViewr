@@ -132,11 +132,10 @@ private fun BoxScope.AppearanceAnimated(
 @Composable
 private fun FractalViewPort(fractalManager: FractalManager) {
     val canvasImg by fractalManager.image.collectAsState()
-    val invalidate by fractalManager.invalidator.collectAsState()
     var dragInitPosition = remember { Offset(0f, 0f) }
     Canvas(modifier = Modifier
-        .requiredWidth(canvasImg.width.dp)
-        .requiredHeight(canvasImg.height.dp)
+        .requiredWidth(canvasImg.bufferedImage.width.dp)
+        .requiredHeight(canvasImg.bufferedImage.height.dp)
         .onPointerEvent(PointerEventType.Scroll) {
             with(it.changes.first()) {
                 fractalManager.setScroll(scrollDelta.y, position.x.toInt(), position.y.toInt())
@@ -159,9 +158,7 @@ private fun FractalViewPort(fractalManager: FractalManager) {
             )
         }
     ) {
-        invalidate.let {
-            drawImage(image = canvasImg.toComposeImageBitmap())
-        }
+        drawImage(image = canvasImg.bufferedImage.toComposeImageBitmap())
     }
 }
 
