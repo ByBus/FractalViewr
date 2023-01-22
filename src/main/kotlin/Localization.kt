@@ -8,6 +8,10 @@ object Localization {
     const val undo = "Undo"
     //Save file Dialog
     const val fileSaveDialogTitle = "Select file or type filename"
+    const val notNumber = "Please type only numbers"
+    const val imageSize = "Image size"
+    const val coputeNewSize = "Calculate"
+    const val largeNumber = "Please use five-digit number"
     //Gradient Picker dialog
     const val gradientMakerTitle = "Create gradient"
 

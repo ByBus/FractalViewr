@@ -7,6 +7,7 @@ import data.GradientRepository
 import data.fractal.Mandelbrot
 import domain.factory.FactoryMaker
 import domain.imageprocessing.Configurable
+import domain.imageprocessing.ConfigurationProvider
 import domain.imageprocessing.FractalImageProcessor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import presenter.Palette
 import presenter.RangeRemapper
-import java.awt.image.BufferedImage
-import java.io.File
 
 
 private const val WIDTH = 1000
@@ -30,15 +29,15 @@ class FractalManager(
     private val screenMapper: RangeRemapper<Int, Double>,
     private val palette: Palette<Int>,
     private val gradientRepository: GradientRepository,
-    private val imageFileSaver: FileSaver<BufferedImage>,
     private val familyFactoryMaker: FactoryMaker<FractalType>,
     private val finalImageProcessor: FractalImageProcessor,
     private val previewImageProcessor: FractalImageProcessor,
-) : Configurable<FractalSpaceState<Double>> {
+) : Configurable<FractalSpaceState<Double>>, ConfigurationProvider<CanvasStateHolder> {
     private var job: Job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
+    var fractal: Fractal = Mandelbrot()
+    var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
 
     val gradients = gradientRepository.gradients
     val image = finalImageProcessor.image
@@ -158,13 +157,10 @@ class FractalManager(
 
     override fun setConfiguration(fractal: Fractal, state: FractalSpaceState<Double>) {
         this.canvasStateHolder = CanvasStateHolder(state)
+        this.fractal = fractal
         finalImageProcessor.setConfiguration(fractal, canvasStateHolder)
         previewImageProcessor.setConfiguration(fractal, canvasStateHolder)
         computePreviewAndThenImage()
-    }
-
-    fun saveImage(file: File) {
-        imageFileSaver.save(finalImageProcessor.image.value.bufferedImage, file)
     }
 
     fun delete(gradient: GradientData) {
@@ -173,6 +169,10 @@ class FractalManager(
 
     fun editGradient(id: Int, name: String, colors: List<Pair<Float, Int>>) {
         gradientRepository.edit(GradientData(name, colors, id))
+    }
+
+    override fun provideState(stateConsumer: (fractal: Fractal, state: CanvasStateHolder) -> Unit) {
+        stateConsumer.invoke(fractal, canvasStateHolder)
     }
 }
 

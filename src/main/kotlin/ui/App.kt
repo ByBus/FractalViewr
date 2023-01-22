@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import data.GradientData
 import domain.*
+import org.koin.java.KoinJavaComponent.getKoin
 import ui.gradientmaker.controller.ColorPickerController
 import ui.gradientmaker.controller.GradientSliderController
 import ui.style.FractalTheme
@@ -171,6 +172,7 @@ private fun GradientButtons(
     val items by fractalManager.gradients.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     LazyColumn(modifier = Modifier.padding(8.dp)) {
+
         items(items = items, key = { it.id }
         ) { gradient ->
             Row(
@@ -236,12 +238,11 @@ private fun ToolBar(dialogState: MutableState<GradientDialog>, fractalManager: F
         ToolBarIconButton(AddGradientIcon(), Localization.create) { dialogState.value = GradientDialog.CREATE }
     }
     if (showFileSaveDialog) {
-        FileSaveDialog(
-            title = Localization.fileSaveDialogTitle,
-            onResult = { file ->
-                file?.let {
-                    fractalManager.saveImage(it)
-                }
+        ResizeImageSaveDialog(
+            title = "Resize image or save",
+            currentImage = fractalManager.image.value,
+            controller = getKoin().get(),
+            selfClose = {
                 showFileSaveDialog = false
             }
         )

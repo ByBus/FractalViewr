@@ -20,7 +20,7 @@ abstract class FractalImageProcessor(
     private val palette: Palette<Int>,
 ) : ImageProcessor, Configurable<CanvasStateHolder> {
     protected val buffer = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-    private val mutableImage = MutableStateFlow(BufferedImageWrapper(buffer))
+    protected val mutableImage = MutableStateFlow(BufferedImageWrapper(buffer))
     val image = mutableImage.asStateFlow()
 
     protected lateinit var fractal: Fractal

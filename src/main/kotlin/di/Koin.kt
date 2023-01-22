@@ -8,13 +8,12 @@ import data.local.exposed.ExposedDao
 import domain.*
 import domain.factory.FactoryMaker
 import domain.factory.FractalFamilyFactoryMaker
-import domain.imageprocessing.FinalImageProcessor
-import domain.imageprocessing.FractalImageProcessor
-import domain.imageprocessing.PreviewProcessor
+import domain.imageprocessing.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
+import org.koin.dsl.binds
 import org.koin.dsl.module
 import presenter.*
 import ui.gradientmaker.ColorProducer
@@ -28,11 +27,13 @@ import java.awt.image.BufferedImage
 val mainModule = module(createdAtStart = true) {
     single {
         FractalManager(
-            get(), get(), get(), get(), get(),
+            get(), get(), get(), get(),
             finalImageProcessor = get(named("final_image")),
             previewImageProcessor = get(named("preview_image"))
         )
-    }
+    }.binds(arrayOf(FractalManager::class, ConfigurationProvider::class))
+
+
     single<RangeRemapper<Int, Double>> { IntDoubleReMapper() }
 
     factory<Interpolator<Color>> { AwtColorInterpolator() }
@@ -66,6 +67,17 @@ val mainModule = module(createdAtStart = true) {
             get()
         )
     }
+
+    factory<FractalImageProcessor>(named("rescale_image_save_dialog")) { params  ->
+        RescaleImageProcessor(
+            params.get(),
+            params.get(),
+            get(),
+            get()
+        )
+    }
+
+    factoryOf(::FileSaveDialogController)
 }
 
 
