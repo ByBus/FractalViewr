@@ -239,7 +239,7 @@ private fun ToolBar(dialogState: MutableState<GradientDialog>, fractalManager: F
     }
     if (showFileSaveDialog) {
         ResizeImageSaveDialog(
-            title = "Resize image or save",
+            title = Localization.fileSaveOrResizeDialogTitle,
             currentImage = fractalManager.image.value,
             controller = getKoin().get(),
             selfClose = {

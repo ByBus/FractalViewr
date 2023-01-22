@@ -15,14 +15,13 @@ class RescaleImageProcessor(
 ) : FractalImageProcessor(width, height, screenMapper, palette) {
 
     override fun CoroutineScope.computation(state: FractalSpaceState<Double>) {
-        println(width)
         val height = buffer.height
         val width = buffer.width
-        outer@ for (y in 0 until height) {
-            if (!isActive) break@outer
+        for (y in 0 until height) {
+            if (!isActive) break
             launch {
-                inner@ for (x in 0 until width) {
-                    if (!isActive) break@inner
+                for (x in 0 until width) {
+                    if (!isActive) break
                     computePixel(x, y, state)
                 }
                 notifyUpdate()

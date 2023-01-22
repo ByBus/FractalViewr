@@ -20,6 +20,7 @@ import domain.imageprocessing.FileSaveDialogController
 import java.awt.Cursor
 
 private const val INITIAL_IMAGE_SIZE = "1000"
+private const val MAX_IMAGE_SIZE = 46000
 private const val ERROR = 1
 private const val TOO_LARGE_NUMBER = 2
 private const val NO_ERROR = 0
@@ -69,14 +70,17 @@ fun ResizeImageSaveDialog(
                             text = it.replaceFirst("^0+".toRegex(), "").take(10)
                             showError = when {
                                 !text.matches("\\d+".toRegex()) -> ERROR
-                                !text.matches("\\d{1,5}".toRegex()) -> TOO_LARGE_NUMBER
+                                text.toInt() > MAX_IMAGE_SIZE -> TOO_LARGE_NUMBER
                                 else -> NO_ERROR
                             }
                         },
                         label = {
-                            if (showError == NO_ERROR) Text(Localization.imageSize) else Text(
-                                if(showError == ERROR) Localization.notNumber else Localization.largeNumber
-                            )
+                            val string = when (showError) {
+                                ERROR -> Localization.notNumber
+                                TOO_LARGE_NUMBER -> Localization.largeNumber + MAX_IMAGE_SIZE
+                                else -> Localization.imageSize
+                            }
+                            Text(string)
                         },
                         trailingIcon = {
                             if (showError != NO_ERROR) {
