@@ -16,11 +16,13 @@ import java.io.File
 
 class FileSaveDialogController(
     private val configurationProvider: ConfigurationProvider<CanvasStateHolder>,
-    private val imageFileSaver: FileSaver<BufferedImage>) {
+    private val imageFileSaver: FileSaver<BufferedImage>,
+) {
     private var job: Job? = null
     private var subscriptionJob: Job? = null
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private lateinit var imageProcessor: FractalImageProcessor
+
     init {
         createImageprocessor(1, 1)
     }
@@ -34,7 +36,7 @@ class FileSaveDialogController(
                 qualifier = named("rescale_image_save_dialog"),
                 parameters = { parametersOf(width, height) }
             )
-        configurationProvider.provideState{ fractal, stateHolder ->
+        configurationProvider.provideState { fractal, stateHolder ->
             imageProcessor.setConfiguration(fractal, stateHolder)
         }
     }
@@ -48,7 +50,7 @@ class FileSaveDialogController(
 
     fun subscribe() {
         subscriptionJob?.cancel()
-        subscriptionJob = coroutineScope.launch{
+        subscriptionJob = coroutineScope.launch {
             imageProcessor.image.collect {
                 _image.value = it
             }

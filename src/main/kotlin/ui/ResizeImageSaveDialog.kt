@@ -100,7 +100,7 @@ fun ResizeImageSaveDialog(
                                         controller.compute()
                                         controller.subscribe()
                                     },
-                                    modifier = Modifier.padding(end = 16.dp)
+                                    modifier = Modifier.padding(end = 10.dp)
                                         .pointerHoverIcon(PointerIcon(Cursor(
                                             if (enabled) Cursor.HAND_CURSOR else Cursor.DEFAULT_CURSOR )))
                                 ) {
@@ -124,7 +124,6 @@ fun ResizeImageSaveDialog(
         },
         confirmButton = {
             Button(
-                enabled = showError == NO_ERROR,
                 onClick = {
                     controller.cancelJob()
                     showFileSaveDialog = true

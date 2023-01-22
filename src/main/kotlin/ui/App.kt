@@ -48,7 +48,7 @@ fun App(
         val creationMode = dialogState.value == GradientDialog.CREATE
         val fractalFamily by fractalManager.fractalFamily.collectAsState()
         GradientMakerDialog(
-            defaultName = if (creationMode) "NEW Gradient" else editDialogIdName.second,
+            defaultName = if (creationMode) Localization.gradientDefaultName else editDialogIdName.second,
             openDialog = dialogState,
             resetOnOpen = creationMode,
             colorPickerController = colorPickerController,

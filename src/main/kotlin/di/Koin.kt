@@ -44,7 +44,7 @@ val mainModule = module(createdAtStart = true) {
     singleOf(::ExposedGradients) { bind<MutableDataSource<GradientData>>() }
     singleOf(::GradientRepository)
 
-    single<FileSaver<BufferedImage>> { ImageSaver() }
+    factory<FileSaver<BufferedImage>> { ImageSaver() }
 
     singleOf(::Configurator)
 

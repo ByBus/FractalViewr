@@ -12,10 +12,10 @@ object Localization {
     const val notNumber = "Please type only numbers"
     const val imageSize = "Image size"
     const val coputeNewSize = "Calculate"
-    const val largeNumber = "Please make size less than "
+    const val largeNumber = "Please note that max size is "
     //Gradient Picker dialog
     const val gradientMakerTitle = "Create gradient"
-
+    const val gradientDefaultName = "NEW Gradient"
     const val gradientHint = "Gradient name"
     const val gradientHintError = "Please type gradient name"
     const val ok = "OK"

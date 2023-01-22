@@ -9,12 +9,9 @@ import domain.factory.FactoryMaker
 import domain.imageprocessing.Configurable
 import domain.imageprocessing.ConfigurationProvider
 import domain.imageprocessing.FractalImageProcessor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import presenter.Palette
 import presenter.RangeRemapper
 
@@ -36,8 +33,8 @@ class FractalManager(
     private var job: Job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    var fractal: Fractal = Mandelbrot()
-    var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
+    private var fractal: Fractal = Mandelbrot()
+    private var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
 
     val gradients = gradientRepository.gradients
     val image = finalImageProcessor.image
@@ -57,13 +54,13 @@ class FractalManager(
     }
 
     //not used: race condition
-     private fun subscribeToPreview() {
-        coroutineScope.launch {
-            previewImageProcessor.image.collect { preview ->
-                finalImageProcessor.update(preview)
-            }
-        }
-    }
+//     private fun subscribeToPreview() {
+//        coroutineScope.launch {
+//            previewImageProcessor.image.collect { preview ->
+//                finalImageProcessor.update(preview)
+//            }
+//        }
+//    }
 
     private fun updateFromPreview() {
         val preview = previewImageProcessor.image.value
@@ -90,7 +87,9 @@ class FractalManager(
     fun computeImage(updateFromPreviewFirst: Boolean = true) {
         stopImageComputation()
         job = coroutineScope.launch {
-            if (updateFromPreviewFirst) updateFromPreview()
+            if (updateFromPreviewFirst) {
+                updateFromPreview()
+            }
             finalImageProcessor.computeImage()
         }
     }
