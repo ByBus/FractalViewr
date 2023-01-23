@@ -25,10 +25,14 @@ class FileSaveDialogController(
 
     init {
         createImageprocessor(1, 1)
+        imageFileSaver.progressProvider { percent -> _progress.value = percent }
     }
 
     private val _image = MutableStateFlow(imageProcessor.image.value)
     val image = _image.asStateFlow()
+
+    private val _progress = MutableStateFlow(100f)
+    val savedPercentage = _progress.asStateFlow()
 
     fun createImageprocessor(width: Int, height: Int) {
         imageProcessor = getKoin()

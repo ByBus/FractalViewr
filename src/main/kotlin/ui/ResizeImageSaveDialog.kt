@@ -37,6 +37,7 @@ fun ResizeImageSaveDialog(
         controller.update(currentImage)
     }
     val image by controller.image.collectAsState()
+    val savingPercent by controller.savedPercentage.collectAsState()
     var showError by remember { mutableStateOf(NO_ERROR) }
     var text by remember { mutableStateOf(INITIAL_IMAGE_SIZE) }
     var isComputed by remember { mutableStateOf(false) }
@@ -128,12 +129,17 @@ fun ResizeImageSaveDialog(
             }
         },
         confirmButton = {
-            Button(
-                onClick = {
-                    controller.cancelJob()
-                    showFileSaveDialog = true
-                }) {
-                Text(Localization.save)
+            if (savingPercent == 100f) {
+                Button(
+                    onClick = {
+                        controller.cancelJob()
+                        showFileSaveDialog = true
+                    },
+                modifier = Modifier.width(90.dp)) {
+                    Text(Localization.save)
+                }
+            } else {
+                LoadingButton(percent = savingPercent, modifier = Modifier.width(90.dp))
             }
         },
         dismissButton = {
