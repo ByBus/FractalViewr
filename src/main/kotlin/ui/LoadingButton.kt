@@ -43,7 +43,7 @@ fun LoadingButton(
                 .height(ButtonDefaults.MinHeight),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "%.0f%%".format(percent), style = MaterialTheme.typography.subtitle1)
+            Text(text = "%.0f%%".format(percent), style = MaterialTheme.typography.subtitle2)
         }
     }
 }

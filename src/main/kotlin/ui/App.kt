@@ -64,7 +64,7 @@ fun App(
             Column(modifier = Modifier) {
                 ToolBar(fractalManager, switchToCreateMode = { editDialogConfig = editDialogConfig.create() })
                 DropdownMenuSelector(
-                    items = MainFractals.values().map { it.title() },
+                    items = MainFractals.values().map { it.title().uppercase() },
                     label = Localization.fractalSelectorTitle
                 ) {
                     currentFractal = MainFractals.values()[it]

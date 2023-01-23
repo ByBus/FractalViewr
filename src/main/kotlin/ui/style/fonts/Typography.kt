@@ -16,6 +16,15 @@ private val Oswald = FontFamily(
     Font("font/oswald/Oswald-Bold.ttf", FontWeight.W700)
 )
 
+private val RobotoMono = FontFamily(
+    Font("font/robotomono/RobotoMono-VariableFont_wght.ttf", FontWeight.W200),
+    Font("font/robotomono/RobotoMono-VariableFont_wght.ttf", FontWeight.W300),
+    Font("font/robotomono/RobotoMono-VariableFont_wght.ttf"),
+    Font("font/robotomono/RobotoMono-VariableFont_wght.ttf", FontWeight.W500),
+    Font("font/robotomono/RobotoMono-VariableFont_wght.ttf", FontWeight.W600),
+    Font("font/robotomono/RobotoMono-VariableFont_wght.ttf", FontWeight.W700)
+)
+
 val FractalThemeTypography = Typography(
     body1 = TextStyle(
         fontFamily = Oswald,
@@ -30,7 +39,7 @@ val FractalThemeTypography = Typography(
     ),
     h5 = TextStyle(
         fontFamily = Oswald,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
         letterSpacing = 0.15.sp
     ),
@@ -38,5 +47,10 @@ val FractalThemeTypography = Typography(
         fontFamily = Oswald,
         fontWeight = FontWeight.Light,
         fontSize = 18.sp
+    ),
+    subtitle2 = TextStyle(
+        fontFamily = RobotoMono,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
     ),
 )

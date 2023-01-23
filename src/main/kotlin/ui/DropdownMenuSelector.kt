@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.awt.Cursor
@@ -89,11 +90,11 @@ fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: 
 }
 
 
-private fun createPowStyle(itemText: String): AnnotatedString {
+private fun createPowStyle(itemText: String, fontSize: TextUnit = 12.sp): AnnotatedString {
     val powSymbol = "^"
     val superScriptStyle = SpanStyle(
         baselineShift = BaselineShift.Superscript,
-        fontSize = 12.sp,
+        fontSize = fontSize,
     )
     val splitText = itemText.split("(?=\\^)|(?= [-+])".toRegex())
     return buildAnnotatedString {

@@ -64,12 +64,12 @@ fun GradientMakerDialog(
                         selfClosing()
                     }
                 }) {
-                Text(Localization.ok)
+                Text(Localization.ok, style = MaterialTheme.typography.subtitle2)
             }
         },
         dismissButton = {
             Button(onClick = { selfClosing() }) {
-                Text(Localization.cancel)
+                Text(Localization.cancel, style = MaterialTheme.typography.subtitle2)
             }
         }
     )

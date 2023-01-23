@@ -110,7 +110,7 @@ fun ResizeImageSaveDialog(
                                             )
                                         )
                                 ) {
-                                    Text(Localization.coputeNewSize)
+                                    Text(Localization.coputeNewSize.lowercase())
                                 }
                             }
                         },
@@ -136,7 +136,7 @@ fun ResizeImageSaveDialog(
                         showFileSaveDialog = true
                     },
                 modifier = Modifier.width(90.dp)) {
-                    Text(Localization.save)
+                    Text(Localization.save, style = MaterialTheme.typography.subtitle2)
                 }
             } else {
                 LoadingButton(percent = savingPercent, modifier = Modifier.width(90.dp))
@@ -148,7 +148,7 @@ fun ResizeImageSaveDialog(
                 selfClose()
             }
             ) {
-                Text(Localization.cancel)
+                Text(Localization.cancel, style = MaterialTheme.typography.subtitle2)
             }
         },
     )
