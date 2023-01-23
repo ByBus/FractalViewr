@@ -31,7 +31,7 @@ fun ResizeImageSaveDialog(
     title: String,
     currentImage: BufferedImageWrapper,
     controller: FileSaveDialogController,
-    selfClose: () -> Unit
+    selfClose: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         controller.update(currentImage)
@@ -86,7 +86,7 @@ fun ResizeImageSaveDialog(
                             if (showError != NO_ERROR) {
                                 Icon(
                                     Icons.Filled.Info,
-                                    if(showError == ERROR) Localization.notNumber else Localization.largeNumber,
+                                    if (showError == ERROR) Localization.notNumber else Localization.largeNumber,
                                     tint = MaterialTheme.colors.error
                                 )
                             } else {
@@ -101,8 +101,13 @@ fun ResizeImageSaveDialog(
                                         controller.subscribe()
                                     },
                                     modifier = Modifier.padding(end = 10.dp)
-                                        .pointerHoverIcon(PointerIcon(Cursor(
-                                            if (enabled) Cursor.HAND_CURSOR else Cursor.DEFAULT_CURSOR )))
+                                        .pointerHoverIcon(
+                                            PointerIcon(
+                                                Cursor(
+                                                    if (enabled) Cursor.HAND_CURSOR else Cursor.DEFAULT_CURSOR
+                                                )
+                                            )
+                                        )
                                 ) {
                                     Text(Localization.coputeNewSize)
                                 }
@@ -134,7 +139,8 @@ fun ResizeImageSaveDialog(
         dismissButton = {
             Button(onClick = {
                 controller.cancelJob()
-                selfClose() }
+                selfClose()
+            }
             ) {
                 Text(Localization.cancel)
             }

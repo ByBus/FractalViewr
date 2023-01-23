@@ -1,6 +1,8 @@
 package ui.gradientmaker.controller
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -26,7 +28,7 @@ class GradientSliderController(
     }
     private var gradientColor: GradientColor = GradientColor.Empty
 
-    fun gradient(): List<GradientColor.Marker> = gradientColors.toList()
+    fun gradient(): List<GradientColor.Marker> = gradientColors
 
     fun selectBetween(positionMin: Offset, positionMax: Offset, size: Size) {
         val min = calculateMarkerPosition(positionMin, size)

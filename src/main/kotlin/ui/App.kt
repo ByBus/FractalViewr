@@ -28,8 +28,6 @@ import androidx.compose.ui.unit.dp
 import data.GradientData
 import domain.*
 import org.koin.java.KoinJavaComponent.getKoin
-import ui.gradientmaker.controller.ColorPickerController
-import ui.gradientmaker.controller.GradientSliderController
 import ui.style.FractalTheme
 
 
@@ -38,32 +36,32 @@ import ui.style.FractalTheme
 fun App(
     fractalManager: FractalManager,
     configurator: Configurator,
-    colorPickerController: ColorPickerController,
-    gradientSliderController: GradientSliderController,
 ) {
     FractalTheme {
         var currentFractal: FractalType by remember { mutableStateOf(MainFractals.MANDELBROT) }
-        val dialogState = remember { mutableStateOf(GradientDialog.CLOSED) }
-        var editDialogIdName by remember { mutableStateOf(0 to "Name") }
-        val creationMode = dialogState.value == GradientDialog.CREATE
+        var editDialogConfig by remember { mutableStateOf(GradientDialogConfig()) }
+
         val fractalFamily by fractalManager.fractalFamily.collectAsState()
-        GradientMakerDialog(
-            defaultName = if (creationMode) Localization.gradientDefaultName else editDialogIdName.second,
-            openDialog = dialogState,
-            resetOnOpen = creationMode,
-            colorPickerController = colorPickerController,
-            gradientSliderController = gradientSliderController
-        ) { name, colors ->
-            when (dialogState.value) {
-                GradientDialog.CREATE -> fractalManager.saveGradient(name, colors)
-                GradientDialog.EDIT -> fractalManager.editGradient(id = editDialogIdName.first, name, colors)
-                else -> {}
+        if (editDialogConfig.isOpened()) {
+            GradientMakerDialog(
+                title = Localization.gradientMakerTitle,
+                defaultName = if (editDialogConfig.creationMode()) Localization.gradientDefaultName else editDialogConfig.name,
+                colorPickerController = getKoin().get(),
+                gradientSliderController = getKoin().get(),
+                selfClosing = { editDialogConfig = editDialogConfig.close() },
+                startGradient = if (editDialogConfig.creationMode()) emptyList() else editDialogConfig.gradient
+            ) { name, colors ->
+                when {
+                    editDialogConfig.creationMode() -> fractalManager.saveGradient(name, colors)
+                    editDialogConfig.editMode() -> fractalManager.editGradient(id = editDialogConfig.id, name, colors)
+                    else -> {}
+                }
             }
         }
         Row(modifier = Modifier) {
             FractalViewPort(fractalManager)
             Column(modifier = Modifier) {
-                ToolBar(dialogState, fractalManager)
+                ToolBar(fractalManager, switchToCreateMode = { editDialogConfig = editDialogConfig.create() })
                 DropdownMenuSelector(
                     items = MainFractals.values().map { it.title() },
                     label = Localization.fractalSelectorTitle
@@ -83,9 +81,7 @@ fun App(
                 }
                 GradientButtons(fractalManager,
                     onEdit = { id, name, gradient ->
-                        gradientSliderController.setGradient(gradient)
-                        editDialogIdName = id to name
-                        dialogState.value = GradientDialog.EDIT
+                        editDialogConfig = GradientDialogConfig(id, name, gradient).edit()
                     })
             }
         }
@@ -226,7 +222,7 @@ private fun GradientButtonWithEdit(
 
 
 @Composable
-private fun ToolBar(dialogState: MutableState<GradientDialog>, fractalManager: FractalManager) {
+private fun ToolBar(fractalManager: FractalManager, switchToCreateMode: () -> Unit) {
     var showFileSaveDialog by remember { mutableStateOf(false) }
     TopAppBar(
         backgroundColor = MaterialTheme.colors.background,
@@ -235,7 +231,7 @@ private fun ToolBar(dialogState: MutableState<GradientDialog>, fractalManager: F
         ToolBarIconButton(UndoIcon(), Localization.undo) { fractalManager.undo() }
         ToolBarIconButton(ResetIcon(), Localization.reset) { fractalManager.reset() }
         ToolBarIconButton(SaveIconOutlined(), Localization.save) { showFileSaveDialog = true }
-        ToolBarIconButton(AddGradientIcon(), Localization.create) { dialogState.value = GradientDialog.CREATE }
+        ToolBarIconButton(AddGradientIcon(), Localization.create) { switchToCreateMode() }
     }
     if (showFileSaveDialog) {
         ResizeImageSaveDialog(

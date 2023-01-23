@@ -42,6 +42,7 @@ fun GradientSlider(
     strokeColor: Color = MaterialTheme.colors.secondary,
     colorProvider: () -> Color,
 ) {
+    var forceMarkersRecomposition by remember { mutableStateOf(true) }
     var clickTime by remember { mutableStateOf(0L) }
     var selectedState by remember { mutableStateOf(MarkerState.IDLE) }
     val transitionSelected = updateTransition(selectedState)
@@ -101,33 +102,35 @@ fun GradientSlider(
                 drawRoundRect(color = strokeColor, style = Stroke(2f), cornerRadius = cornerRadius)
             }
         ) {
-
+            forceMarkersRecomposition = !forceMarkersRecomposition
         }
         var currentSelectedId by remember { mutableStateOf(0L) }
-        for (gradientColor in gradientController.gradient()) {
-            val markerSet = currentSelectedId == gradientColor.id
-            when {
-                !markerSet && gradientColor.selected -> currentSelectedId = gradientColor.id
-                markerSet && gradientColor.selected -> selectedState = MarkerState.SELECTED
-                markerSet && !gradientColor.selected -> selectedState = MarkerState.IDLE
-            }
-            val radius = if (markerSet) markerRadiusSelected else pickerRadiusMin
-            val changeVerticalValue =
-                { coord: Offset -> if (gradientColor.selected && verticalPosition != 0f) coord.copy(y = verticalPosition) else coord }
-            Box() {
-                Canvas(modifier = Modifier.fillMaxWidth().height(sliderHeight)) {
-                    drawMarker(
-                        position = changeVerticalValue(
-                            gradientController.calculateGradientPosition(
-                                gradientColor.position,
-                                size
-                            )
-                        ),
-                        color = gradientColor.color,
-                        radius = radius,
-                        strokeWidth = 0.dp,
-                        drawOuterStroke = gradientColor.selected
-                    )
+        with(forceMarkersRecomposition) {
+            for (gradientColor in gradientController.gradient()) {
+                val markerSet = currentSelectedId == gradientColor.id
+                when {
+                    !markerSet && gradientColor.selected -> currentSelectedId = gradientColor.id
+                    markerSet && gradientColor.selected -> selectedState = MarkerState.SELECTED
+                    markerSet && !gradientColor.selected -> selectedState = MarkerState.IDLE
+                }
+                val radius = if (markerSet) markerRadiusSelected else pickerRadiusMin
+                val changeVerticalValue =
+                    { coord: Offset -> if (gradientColor.selected && verticalPosition != 0f) coord.copy(y = verticalPosition) else coord }
+                Box() {
+                    Canvas(modifier = Modifier.fillMaxWidth().height(sliderHeight)) {
+                        drawMarker(
+                            position = changeVerticalValue(
+                                gradientController.calculateGradientPosition(
+                                    gradientColor.position,
+                                    size
+                                )
+                            ),
+                            color = gradientColor.color,
+                            radius = radius,
+                            strokeWidth = 0.dp,
+                            drawOuterStroke = gradientColor.selected
+                        )
+                    }
                 }
             }
         }
