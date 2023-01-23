@@ -14,7 +14,6 @@ class FinalImageProcessor(
     screenMapper: RangeRemapper<Int, Double>,
 ) : FractalImageProcessor(width, height, screenMapper, palette) {
     private val randomPixelCombinationsChunks: List<IntArray> = preparePixels(width, height)
-
     override fun CoroutineScope.computation(state: FractalSpaceState<Double>) {
         randomPixelCombinationsChunks.forEach { chunk ->
             launch {
@@ -28,8 +27,8 @@ class FinalImageProcessor(
     }
 
     override fun update(imageWrapper: BufferedImageWrapper) {
+        if (imageWrapper.ignore) return
         buffer.data = imageWrapper.upscale(width, height).bufferedImage.data
-        notifyUpdate()
     }
 
     private fun preparePixels(width: Int, height: Int) = (0 until height).asSequence()

@@ -3,7 +3,7 @@ package domain.imageprocessing
 import java.awt.Image
 import java.awt.image.BufferedImage
 
-class BufferedImageWrapper(val bufferedImage: BufferedImage) {
+class BufferedImageWrapper(val bufferedImage: BufferedImage, val ignore: Boolean = false) {
     fun upscale(
         targetWidth: Int,
         targetHeight: Int,
@@ -12,6 +12,7 @@ class BufferedImageWrapper(val bufferedImage: BufferedImage) {
         return BufferedImageWrapper(
             BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB).apply {
                 graphics.drawImage(resultingImage, 0, 0, null)
-            })
+            }, ignore
+        )
     }
 }

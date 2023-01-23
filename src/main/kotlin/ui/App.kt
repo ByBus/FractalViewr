@@ -180,7 +180,7 @@ private fun GradientButtons(
                     spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium)
                 )
             ) {
-                if (gradient.id < 0) { // default gradients have negative ids
+                if (gradient.isDefault()) { // default gradients have negative ids
                     val offsetX = remember { Animatable(0f) }
                     GradientButtonWithEdit(
                         gradient,

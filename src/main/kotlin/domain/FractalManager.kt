@@ -32,20 +32,22 @@ class FractalManager(
 ) : Configurable<FractalSpaceState<Double>>, ConfigurationProvider<CanvasStateHolder> {
     private var job: Job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
-
+    // State. Common for FractalManager and image processors
     private var fractal: Fractal = Mandelbrot()
     private var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
 
+    private val _image = MutableStateFlow(finalImageProcessor.image.value)
+    val image = _image.asStateFlow()
     val gradients = gradientRepository.gradients
-    val image = finalImageProcessor.image
 
     private val _familyFactory = MutableStateFlow<ConcreteFactory<*>>(familyFactoryMaker.defaultFactory())
     val fractalFamily = _familyFactory.asStateFlow()
 
     init {
-        finalImageProcessor.setConfiguration(Mandelbrot(), canvasStateHolder)
         previewImageProcessor.setConfiguration(Mandelbrot(), canvasStateHolder)
-        //subscribeToPreview()
+        finalImageProcessor.setConfiguration(Mandelbrot(), canvasStateHolder)
+        subscribeToPreview()
+        subscribeToFinalImage()
         setGradient(gradients.value[0].colorStops)
     }
 
@@ -53,18 +55,25 @@ class FractalManager(
         job.cancel()
     }
 
-    //not used: race condition
-//     private fun subscribeToPreview() {
-//        coroutineScope.launch {
-//            previewImageProcessor.image.collect { preview ->
-//                finalImageProcessor.update(preview)
-//            }
-//        }
-//    }
+     private fun subscribeToPreview() {
+        coroutineScope.launch {
+            previewImageProcessor.image.collect { preview ->
+                if (preview.ignore) return@collect
+                _image.value = preview.upscale(WIDTH, HEIGHT)
+            }
+        }
+    }
+
+    private fun subscribeToFinalImage() {
+        coroutineScope.launch {
+            finalImageProcessor.image.collect { finalImage ->
+                _image.value = finalImage
+            }
+        }
+    }
 
     private fun updateFromPreview() {
-        val preview = previewImageProcessor.image.value
-        finalImageProcessor.update(preview)
+        finalImageProcessor.update(previewImageProcessor.image.value)
     }
 
     fun setFractalFamilyOf(fractalType: FractalType) {
@@ -87,9 +96,8 @@ class FractalManager(
     fun computeImage(updateFromPreviewFirst: Boolean = true) {
         stopImageComputation()
         job = coroutineScope.launch {
-            if (updateFromPreviewFirst) {
+            if (updateFromPreviewFirst)
                 updateFromPreview()
-            }
             finalImageProcessor.computeImage()
         }
     }
@@ -97,7 +105,6 @@ class FractalManager(
     private fun computePreview() {
         job = coroutineScope.launch {
             previewImageProcessor.computeImage()
-            updateFromPreview()
         }
     }
 
