@@ -12,7 +12,11 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import java.awt.Cursor
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -29,7 +33,7 @@ fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: 
 
     Column(modifier = modifier.padding(8.dp)) {
         OutlinedTextField(
-            value = if (items.contains(selectedPosition)) selectedPosition.uppercase() else items[0].uppercase(),
+            value = TextFieldValue(createPowStyle(if (items.contains(selectedPosition)) selectedPosition else items[0])),
             onValueChange = { },
             modifier = Modifier.fillMaxWidth()
                 .pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)), true)
@@ -54,7 +58,8 @@ fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: 
             enabled = false,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 disabledTextColor = Color.Black
-            )
+            ),
+            textStyle = MaterialTheme.typography.h5
         )
         DropdownMenu(
             expanded = expanded,
@@ -73,7 +78,7 @@ fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: 
                     modifier = if (selectedPosition == itemText) Modifier.background(MaterialTheme.colors.secondary) else Modifier
                 ) {
                     Text(
-                        text = itemText,
+                        text = createPowStyle(itemText),
                         style = MaterialTheme.typography.h6,
                         color = if (selectedPosition == itemText) MaterialTheme.colors.onPrimary else Color.Unspecified
                     )
@@ -82,3 +87,26 @@ fun DropdownMenuSelector(items: List<String>, initialSelection: Int = 0, label: 
         }
     }
 }
+
+
+private fun createPowStyle(itemText: String): AnnotatedString {
+    val powSymbol = "^"
+    val superScriptStyle = SpanStyle(
+        baselineShift = BaselineShift.Superscript,
+        fontSize = 12.sp,
+    )
+    val splitText = itemText.split("(?=\\^)|(?= [-+])".toRegex())
+    return buildAnnotatedString {
+        for (part in splitText) {
+            if (part.startsWith(powSymbol)) {
+                val number = part.replace(powSymbol, "")
+                withStyle(superScriptStyle) {
+                    append(number)
+                }
+            } else {
+                append(part)
+            }
+        }
+    }
+}
+

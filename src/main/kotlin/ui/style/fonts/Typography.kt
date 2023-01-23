@@ -28,6 +28,12 @@ val FractalThemeTypography = Typography(
         fontSize = 20.sp,
         letterSpacing = 0.15.sp
     ),
+    h5 = TextStyle(
+        fontFamily = Oswald,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp,
+        letterSpacing = 0.15.sp
+    ),
     subtitle1 = TextStyle(
         fontFamily = Oswald,
         fontWeight = FontWeight.Light,

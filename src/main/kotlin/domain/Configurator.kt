@@ -79,4 +79,3 @@ enum class NewtonFamily(
 }
 
 
-
