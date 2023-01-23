@@ -17,21 +17,21 @@ import ui.gradientmaker.controller.GradientSliderController
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GradientMakerDialog(
-    defaultName: String,
     title: String,
-    selfClosing: () -> Unit,
-    resetOnOpen: Boolean = false,
     colorPickerController: ColorPickerController,
     gradientSliderController: GradientSliderController,
+    defaultGradientName: String,
     dialogWidth: Dp = 420.dp,
     startGradient: List<Pair<Float, Int>>,
+    resetOnOpen: Boolean = false,
+    selfClosing: () -> Unit,
     onConfirm: (String, List<Pair<Float, Int>>) -> Unit = { _, _ -> },
 ) {
     LaunchedEffect(Unit) {
         if (resetOnOpen) gradientSliderController.reset()
         gradientSliderController.setGradient(startGradient)
     }
-    var gradientName by remember { mutableStateOf(defaultName) }
+    var gradientNameRemember by remember { mutableStateOf(defaultGradientName) }
     var showError by remember { mutableStateOf(false) }
     AlertDialog(
         modifier = Modifier.width(dialogWidth),
@@ -42,8 +42,8 @@ fun GradientMakerDialog(
         text = {
             Column {
                 TextField(
-                    value = gradientName,
-                    onValueChange = { gradientName = it; showError = it.isBlank() },
+                    value = gradientNameRemember,
+                    onValueChange = { gradientNameRemember = it; showError = it.isBlank() },
                     label = { if (showError.not()) Text(Localization.gradientHint) else Text(Localization.gradientHintError) },
                     trailingIcon = {
                         if (showError)
@@ -60,7 +60,7 @@ fun GradientMakerDialog(
             Button(
                 onClick = {
                     if (showError.not()) {
-                        onConfirm.invoke(gradientName, gradientSliderController.requestGradient())
+                        onConfirm.invoke(gradientNameRemember, gradientSliderController.requestGradient())
                         selfClosing()
                     }
                 }) {
@@ -87,18 +87,14 @@ data class GradientDialogConfig(
 ) {
     fun isOpened() = state != GradientDialog.CLOSED
 
-    fun editMode() = state == GradientDialog.EDIT
+    fun isEditMode() = state == GradientDialog.EDIT
 
-    fun creationMode() = state == GradientDialog.CREATE
-    fun close(): GradientDialogConfig {
-        return this.copy(gradient = emptyList(), state = GradientDialog.CLOSED)
-    }
+    fun isCreationMode() = state == GradientDialog.CREATE
+    fun close(): GradientDialogConfig = copy(gradient = emptyList(), state = GradientDialog.CLOSED)
 
-    fun create(): GradientDialogConfig {
-        return this.copy(state = GradientDialog.CREATE)
-    }
+    fun create(): GradientDialogConfig = copy(state = GradientDialog.CREATE)
 
-    fun edit(): GradientDialogConfig{
-        return this.copy(state = GradientDialog.EDIT)
-    }
+    fun edit(): GradientDialogConfig = copy(state = GradientDialog.EDIT)
+
+    fun withName(newName: String) = copy(name = newName)
 }

@@ -31,6 +31,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
     testImplementation("junit:junit:4.13.1")
+
+    implementation("org.slf4j:slf4j-api:2.0.6")
 }
 
 tasks.test {
@@ -39,6 +41,9 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
+    }
 }
 
 compose.desktop {

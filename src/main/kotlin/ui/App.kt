@@ -38,22 +38,23 @@ fun App(
     configurator: Configurator,
 ) {
     FractalTheme {
+        val defaultName = Localization.gradientDefaultName
         var currentFractal: FractalType by remember { mutableStateOf(MainFractals.MANDELBROT) }
-        var editDialogConfig by remember { mutableStateOf(GradientDialogConfig()) }
+        var editDialogConfig by remember { mutableStateOf(GradientDialogConfig(name = defaultName)) }
 
         val fractalFamily by fractalManager.fractalFamily.collectAsState()
         if (editDialogConfig.isOpened()) {
             GradientMakerDialog(
                 title = Localization.gradientMakerTitle,
-                defaultName = if (editDialogConfig.creationMode()) Localization.gradientDefaultName else editDialogConfig.name,
                 colorPickerController = getKoin().get(),
                 gradientSliderController = getKoin().get(),
-                selfClosing = { editDialogConfig = editDialogConfig.close() },
-                startGradient = if (editDialogConfig.creationMode()) emptyList() else editDialogConfig.gradient
+                defaultGradientName = editDialogConfig.name,
+                startGradient = editDialogConfig.gradient,
+                selfClosing = { editDialogConfig = editDialogConfig.withName(defaultName).close() }
             ) { name, colors ->
                 when {
-                    editDialogConfig.creationMode() -> fractalManager.saveGradient(name, colors)
-                    editDialogConfig.editMode() -> fractalManager.editGradient(id = editDialogConfig.id, name, colors)
+                    editDialogConfig.isCreationMode() -> fractalManager.saveGradient(name, colors)
+                    editDialogConfig.isEditMode() -> fractalManager.editGradient(id = editDialogConfig.id, name, colors)
                     else -> {}
                 }
             }
