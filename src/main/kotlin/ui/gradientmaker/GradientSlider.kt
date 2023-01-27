@@ -127,7 +127,7 @@ fun GradientSlider(
                             ),
                             color = gradientColor.color,
                             radius = radius,
-                            strokeWidth = 0.dp,
+                            strokeWidth = 1.dp,
                             drawOuterStroke = gradientColor.selected
                         )
                     }
