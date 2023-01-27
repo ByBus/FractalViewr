@@ -34,8 +34,8 @@ class FinalImageProcessor(
     private fun preparePixels(width: Int, height: Int) = (0 until height).asSequence()
         .cartesianProduct((0 until width).asSequence())
         .shuffled()
-        .chunked(1000) { it ->
-            it.flatten().toIntArray()
+        .chunked(1000) { listOfListInt ->
+            listOfListInt.flatten().toIntArray()
         }.toList()
 
     private fun <T> Sequence<T>.cartesianProduct(other: Sequence<T>) = this.flatMap { item1 ->

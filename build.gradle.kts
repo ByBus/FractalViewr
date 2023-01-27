@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation(compose.desktop.windows_x64)
+    implementation(compose.desktop.currentOs)
     testImplementation("junit:junit:4.13.1")
 
     // Koin
