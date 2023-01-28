@@ -18,10 +18,13 @@ The main working area of the app. To interact with you can use mouse left button
 - ***Create button*** - opens gradient maker dialog. User-created gradients will appear at the top of the gradient list.
 
 > Save image dialog
-![Save image dialog](images/resize_save_dialog.jpg?raw=true)
+> 
+> ![Save image dialog](images/resize_save_dialog.jpg?raw=true)
 
 > Gradient maker
-![Gradient maker](images/gradient_maker.jpg?raw=true)
+> 
+> ![Gradient maker](images/gradient_maker.jpg?raw=true)
+
 
 ## Selecting fractal
 To choose fractal to draw in viewport choose one from dropdown menu in sidebar titled as *"Fractal"*.
