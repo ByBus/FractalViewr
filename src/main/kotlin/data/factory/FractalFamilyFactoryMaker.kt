@@ -1,4 +1,4 @@
-package domain.factory
+package data.factory
 
 import domain.ConcreteFactory
 import domain.FractalType

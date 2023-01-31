@@ -1,17 +1,14 @@
 package domain
 
-import data.CanvasState
-import data.CanvasStateHolder
-import data.GradientData
-import data.GradientRepository
-import data.fractal.Mandelbrot
-import domain.factory.FactoryMaker
 import domain.imageprocessing.Configurable
 import domain.imageprocessing.ConfigurationProvider
 import domain.imageprocessing.FractalImageProcessor
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import presenter.Palette
 import presenter.RangeRemapper
 
@@ -25,27 +22,27 @@ typealias BiMapperPair<Double> = (Double, Double) -> Pair<Double, Double>
 class FractalManager(
     private val screenMapper: RangeRemapper<Int, Double>,
     private val palette: Palette<Int>,
-    private val gradientRepository: GradientRepository,
-    private val familyFactoryMaker: FactoryMaker<FractalType>,
+    private val gradientRepository: CrudRepository<GradientData>,
+    private val fractalRepository: FractalFamilyRepository,
     private val finalImageProcessor: FractalImageProcessor,
     private val previewImageProcessor: FractalImageProcessor,
 ) : Configurable<FractalSpaceState<Double>>, ConfigurationProvider<CanvasStateHolder> {
     private var job: Job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     // State. Common for FractalManager and image processors
-    private var fractal: Fractal = Mandelbrot()
+    private var fractal: Fractal = fractalRepository.getByType(MainFractals.MANDELBROT)
     private var canvasStateHolder = CanvasStateHolder(CanvasState(-2.0, 1.0, -1.5, 1.5))
 
     private val _image = MutableStateFlow(finalImageProcessor.image.value)
     val image = _image.asStateFlow()
     val gradients = gradientRepository.gradients
 
-    private val _familyFactory = MutableStateFlow<ConcreteFactory<*>>(familyFactoryMaker.defaultFactory())
-    val fractalFamily = _familyFactory.asStateFlow()
+    private val _fractalFamily = MutableStateFlow(FractalFamilyUiState())
+    val fractalFamily = _fractalFamily.asStateFlow()
 
     init {
-        previewImageProcessor.setConfiguration(Mandelbrot(), canvasStateHolder)
-        finalImageProcessor.setConfiguration(Mandelbrot(), canvasStateHolder)
+        previewImageProcessor.setConfiguration(fractal, canvasStateHolder)
+        finalImageProcessor.setConfiguration(fractal, canvasStateHolder)
         subscribeToPreview()
         subscribeToFinalImage()
         setGradient(gradients.value[0].colorStops)
@@ -78,7 +75,10 @@ class FractalManager(
 
     fun setFractalFamilyOf(fractalType: FractalType) {
         if (fractalType.hasFamilyOfFractals()) {
-            _familyFactory.value = familyFactoryMaker.create(fractalType)
+            _fractalFamily.value = FractalFamilyUiState(
+                fractalRepository.familyFractalTypes(fractalType).toList(),
+                fractalRepository.familyName(fractalType)
+            )
         }
     }
 

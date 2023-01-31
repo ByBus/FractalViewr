@@ -1,21 +1,20 @@
 package domain
 
-import data.CanvasState
-import data.fractal.BurningShip
-import data.fractal.Lines
-import data.fractal.Mandelbrot
-import data.fractal.Phoenix
-import domain.factory.FactoryMaker
+import domain.imageprocessing.Configurable
 
-class Configurator(private val fractalManager: FractalManager, private val factoryMaker: FactoryMaker<FractalType>) {
+class Configurator(
+    private val fractalManager: Configurable<FractalSpaceState<Double>>,
+    private val fractalRepository: FractalFamilyRepository,
+) {
     fun changeConfiguration(type: FractalType) {
-        val (fractal, state) = when (type) {
-            is JuliaFamily, MainFractals.JULIA -> factoryMaker.create(type).create(type) to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            MainFractals.BURNING_SHIP -> BurningShip() to CanvasState(-2.2, 1.3, -2.0, 1.0)
-            MainFractals.PHOENIX -> Phoenix() to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            is NewtonFamily, MainFractals.NEWTON -> factoryMaker.create(type).create(type) to CanvasState(-2.0, 2.0, -2.0, 2.0)
-            MainFractals.LINES -> Lines() to CanvasState(-1.5, 1.5, -1.5, 1.5)
-            else -> Mandelbrot() to CanvasState(-2.0, 1.0, -1.5, 1.5)
+        val fractal = fractalRepository.getByType(type)
+        val state = when (type) {
+            is JuliaFamily, MainFractals.JULIA -> CanvasState(-1.5, 1.5, -1.5, 1.5)
+            is NewtonFamily, MainFractals.NEWTON -> CanvasState(-2.0, 2.0, -2.0, 2.0)
+            MainFractals.BURNING_SHIP -> CanvasState(-2.2, 1.3, -2.0, 1.0)
+            MainFractals.PHOENIX -> CanvasState(-1.5, 1.5, -1.5, 1.5)
+            MainFractals.LINES -> CanvasState(-1.5, 1.5, -1.5, 1.5)
+            else -> CanvasState(-2.0, 1.0, -1.5, 1.5)
         }
         fractalManager.setConfiguration(fractal, state)
     }

@@ -1,6 +1,6 @@
 package domain.imageprocessing
 
-import data.CanvasStateHolder
+import domain.CanvasStateHolder
 import domain.FileSaver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

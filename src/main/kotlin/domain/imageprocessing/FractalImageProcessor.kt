@@ -1,6 +1,6 @@
 package domain.imageprocessing
 
-import data.CanvasStateHolder
+import domain.CanvasStateHolder
 import domain.BiMapper
 import domain.Fractal
 import domain.FractalSpaceState

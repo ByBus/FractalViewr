@@ -1,6 +1,6 @@
 package data.local
 
-import data.GradientData
+import domain.GradientData
 import domain.MutableDataSource
 import data.local.exposed.ColorDBToData
 import data.local.exposed.DAO

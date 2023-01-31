@@ -1,6 +1,6 @@
 package data.local.exposed
 
-import data.GradientData
+import domain.GradientData
 
 interface GradientMapper<T> {
     operator fun invoke(id: Int, name: String, colors: Iterable<ColorDB>): T

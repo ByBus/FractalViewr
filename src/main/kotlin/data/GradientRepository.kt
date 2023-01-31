@@ -1,6 +1,8 @@
 package data
 
+import domain.CrudRepository
 import domain.DataSource
+import domain.GradientData
 import domain.MutableDataSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,10 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 class GradientRepository(
     private val defaultGradients: DataSource<GradientData>,
     private val persistedGradients: MutableDataSource<GradientData>,
-) {
+) : CrudRepository<GradientData> {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private var _gradients = MutableStateFlow(emptyList<GradientData>())
-    val gradients = _gradients.asStateFlow()
+    override val gradients = _gradients.asStateFlow()
 
     init {
         runBlocking {
@@ -20,15 +22,15 @@ class GradientRepository(
         }
     }
 
-    fun save(gradientData: GradientData) {
+    override fun save(gradientData: GradientData) {
         executeAndRefresh { persistedGradients.save(gradientData) }
     }
 
-    fun delete(gradientData: GradientData) {
+    override fun delete(gradientData: GradientData) {
         executeAndRefresh { persistedGradients.delete(gradientData) }
     }
 
-    fun edit(gradientData: GradientData) {
+    override fun edit(gradientData: GradientData) {
         executeAndRefresh { persistedGradients.update(gradientData) }
     }
 

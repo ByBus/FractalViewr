@@ -25,7 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import data.GradientData
+import domain.GradientData
 import domain.*
 import org.koin.java.KoinJavaComponent.getKoin
 import ui.style.FractalTheme
@@ -73,10 +73,10 @@ fun App(
                 }
                 AppearanceAnimated(currentFractal.hasFamilyOfFractals()) {
                     DropdownMenuSelector(
-                        items = fractalFamily.types().map { it.title() },
-                        label = fractalFamily.familyName,
+                        items = fractalFamily.types.map { it.title() },
+                        label = fractalFamily.name,
                         onSelect = { position ->
-                            configurator.changeConfiguration(fractalFamily.types()[position])
+                            configurator.changeConfiguration(fractalFamily.types[position])
                         }
                     )
                 }

@@ -6,8 +6,8 @@ import data.local.ExposedGradients
 import data.local.exposed.DAO
 import data.local.exposed.ExposedDao
 import domain.*
-import domain.factory.FactoryMaker
-import domain.factory.FractalFamilyFactoryMaker
+import data.factory.FactoryMaker
+import data.factory.FractalFamilyFactoryMaker
 import domain.imageprocessing.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
@@ -31,7 +31,7 @@ val mainModule = module(createdAtStart = true) {
             finalImageProcessor = get(named("final_image")),
             previewImageProcessor = get(named("preview_image"))
         )
-    }.binds(arrayOf(FractalManager::class, ConfigurationProvider::class))
+    }.binds(arrayOf(FractalManager::class, ConfigurationProvider::class, Configurable::class))
 
 
     single<RangeRemapper<Int, Double>> { IntDoubleReMapper() }
@@ -42,7 +42,7 @@ val mainModule = module(createdAtStart = true) {
     singleOf(::DefaultGradients) { bind<DataSource<GradientData>>() }
     singleOf(::ExposedDao) { bind<DAO>() }
     singleOf(::ExposedGradients) { bind<MutableDataSource<GradientData>>() }
-    singleOf(::GradientRepository)
+    singleOf(::GradientRepository) { bind<CrudRepository<GradientData>>() }
 
     factory<FileSaver<BufferedImage>> { ImageSaver() }
 
@@ -68,7 +68,7 @@ val mainModule = module(createdAtStart = true) {
         )
     }
 
-    factory<FractalImageProcessor>(named("rescale_image_save_dialog")) { params  ->
+    factory<FractalImageProcessor>(named("rescale_image_save_dialog")) { params ->
         RescaleImageProcessor(
             params.get(),
             params.get(),
@@ -78,6 +78,9 @@ val mainModule = module(createdAtStart = true) {
     }
 
     factoryOf(::FileSaveDialogController)
+
+    factoryOf(::FractalDatasource) { bind<ReadSingleDataSource<FractalType, Fractal>>() }
+    factoryOf(::FractalRepository) { bind<FractalFamilyRepository>() }
 }
 
 
