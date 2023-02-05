@@ -34,3 +34,6 @@ Some fractals, such as *Julia* have additional variations. In this case, new dro
 Fractals can be represented in different colors, it's helpful for revealing details. To apply new colors click on a buttons with gradient in the sidebar. Also, you can edit gradient by clicking on pencil button in left side of gradient buttons (button should be hovered).
 
 ![](images/applying_gradient.gif?raw=true)
+
+## Deleting gradient
+To delete a user-created gradient, drag corresponding button to the right until a red X appears.
