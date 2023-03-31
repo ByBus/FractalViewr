@@ -96,7 +96,7 @@ private fun createPowStyle(itemText: String, fontSize: TextUnit = 12.sp): Annota
         baselineShift = BaselineShift.Superscript,
         fontSize = fontSize,
     )
-    val splitText = itemText.split("(?=\\^)|(?= [-+])".toRegex())
+    val splitText = itemText.split("(?=\\$powSymbol)|(?= [-+])".toRegex())
     return buildAnnotatedString {
         for (part in splitText) {
             if (part.startsWith(powSymbol)) {
