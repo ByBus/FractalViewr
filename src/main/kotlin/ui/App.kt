@@ -25,6 +25,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import data.Configurator
+import domain.FractalType
+import data.MainFractals
 import domain.GradientData
 import domain.*
 import org.koin.java.KoinJavaComponent.getKoin

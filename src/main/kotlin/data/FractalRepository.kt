@@ -1,10 +1,9 @@
 package data
 
-import data.factory.FactoryMaker
+import data.fractal.factory.FactoryMaker
 import domain.Fractal
-import domain.FractalType
 import domain.FractalFamilyRepository
-import domain.ReadSingleDataSource
+import domain.FractalType
 import kotlinx.coroutines.runBlocking
 
 class FractalRepository(

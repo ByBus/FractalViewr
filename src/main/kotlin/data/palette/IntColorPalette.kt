@@ -1,4 +1,6 @@
-package presenter
+package data.palette
+
+import domain.Palette
 
 typealias ColorAwt = java.awt.Color
 

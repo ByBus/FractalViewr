@@ -1,7 +1,8 @@
 package domain.imageprocessing
 
-import domain.CanvasStateHolder
+import domain.StateRepository
 import domain.FileSaver
+import domain.FractalSpaceState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,7 +16,7 @@ import java.awt.image.BufferedImage
 import java.io.File
 
 class FileSaveDialogController(
-    private val configurationProvider: ConfigurationProvider<CanvasStateHolder>,
+    private val configurationProvider: ConfigurationProvider<StateRepository<FractalSpaceState<Double>>>,
     private val imageFileSaver: FileSaver<BufferedImage>,
 ) {
     private var job: Job? = null

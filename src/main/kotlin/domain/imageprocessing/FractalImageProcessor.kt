@@ -1,6 +1,6 @@
 package domain.imageprocessing
 
-import domain.CanvasStateHolder
+import domain.StateRepository
 import domain.BiMapper
 import domain.Fractal
 import domain.FractalSpaceState
@@ -9,22 +9,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
-import presenter.Palette
-import presenter.RangeRemapper
+import domain.Palette
+import domain.RangeRemapper
 import java.awt.image.BufferedImage
+
+typealias FractalSpaceStateHolder = StateRepository<FractalSpaceState<Double>>
 
 abstract class FractalImageProcessor(
     val width: Int,
     val height: Int,
     private val screenMapper: RangeRemapper<Int, Double>,
     private val palette: Palette<Int>,
-) : ImageProcessor, Configurable<CanvasStateHolder> {
+) : ImageProcessor, Configurable<FractalSpaceStateHolder> {
     protected val buffer = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
     private val mutableImage = MutableStateFlow(BufferedImageWrapper(buffer, true))
     val image = mutableImage.asStateFlow()
 
     protected lateinit var fractal: Fractal
-    private lateinit var canvasStateHolder: CanvasStateHolder
+    private lateinit var canvasStateHolder: FractalSpaceStateHolder
 
     open fun update(imageWrapper: BufferedImageWrapper) {
         mutableImage.value = imageWrapper.upscale(width, height)
@@ -43,7 +45,7 @@ abstract class FractalImageProcessor(
 
     abstract fun CoroutineScope.computation(state: FractalSpaceState<Double>)
 
-    override fun setConfiguration(fractal: Fractal, state: CanvasStateHolder) {
+    override fun setConfiguration(fractal: Fractal, state: FractalSpaceStateHolder) {
         this.fractal = fractal
         this.canvasStateHolder = state
     }

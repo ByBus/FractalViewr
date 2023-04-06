@@ -1,4 +1,4 @@
-package presenter
+package domain
 
 interface Palette<T> {
     fun color(position: Int): T

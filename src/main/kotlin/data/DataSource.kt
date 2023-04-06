@@ -1,4 +1,4 @@
-package domain
+package data
 
 interface DataSource<T>: ReadAll<T>
 

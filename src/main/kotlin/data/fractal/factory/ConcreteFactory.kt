@@ -1,4 +1,7 @@
-package domain
+package data.fractal.factory
+
+import domain.Fractal
+import domain.FractalType
 
 interface ConcreteFactory<T: FractalType> {
     val familyName: String

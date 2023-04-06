@@ -1,5 +1,6 @@
 package presenter
 
+import domain.IntDoubleReMapper
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

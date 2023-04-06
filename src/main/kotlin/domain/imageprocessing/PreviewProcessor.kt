@@ -3,8 +3,8 @@ package domain.imageprocessing
 import domain.FractalSpaceState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
-import presenter.Palette
-import presenter.RangeRemapper
+import domain.Palette
+import domain.RangeRemapper
 
 class PreviewProcessor(
     width: Int,

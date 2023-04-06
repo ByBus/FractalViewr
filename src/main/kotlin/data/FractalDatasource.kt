@@ -5,7 +5,8 @@ import data.fractal.Lines
 import data.fractal.Mandelbrot
 import data.fractal.Phoenix
 import domain.*
-import data.factory.FactoryMaker
+import data.fractal.factory.FactoryMaker
+import domain.FractalType
 
 class FractalDatasource(
     private val fractalFamilyFactoryMaker: FactoryMaker<FractalType>,

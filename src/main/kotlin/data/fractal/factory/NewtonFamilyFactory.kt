@@ -1,11 +1,14 @@
-package data.factory
+package data.fractal.factory
 
 import Localization
+import domain.FractalType
+import data.NewtonFamily
 import data.fractal.Newton
 import data.fractal.newtonfunction.*
 import domain.*
 
-class NewtonFamilyFactory(override val familyName: String = Localization.newtonEquation) : ConcreteFactory<NewtonFamily> {
+class NewtonFamilyFactory(override val familyName: String = Localization.newtonEquation) :
+    ConcreteFactory<NewtonFamily> {
     override fun create(type: NewtonFamily): Fractal {
         val equation = when (type) {
             NewtonFamily.NEWTON1 -> ZCubeMinusOne()

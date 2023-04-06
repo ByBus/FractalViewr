@@ -1,7 +1,7 @@
 package data.local
 
 import domain.GradientData
-import domain.MutableDataSource
+import data.MutableDataSource
 import data.local.exposed.ColorDBToData
 import data.local.exposed.DAO
 import data.local.exposed.ExposedDB.dbQuery

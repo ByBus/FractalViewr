@@ -1,6 +1,5 @@
 package data
 
-import domain.DataSource
 import domain.GradientData
 
 class DefaultGradients: DataSource<GradientData> {

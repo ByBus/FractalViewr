@@ -3,7 +3,7 @@ package data.fractal.newtonfunction
 import data.fractal.Complex
 import data.fractal.NewtonFunction
 import org.junit.Test
-import presenter.IntDoubleReMapper
+import domain.IntDoubleReMapper
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.test.assertNotEquals

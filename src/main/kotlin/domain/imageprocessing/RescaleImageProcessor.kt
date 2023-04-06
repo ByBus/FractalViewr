@@ -4,8 +4,8 @@ import domain.FractalSpaceState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import presenter.Palette
-import presenter.RangeRemapper
+import domain.Palette
+import domain.RangeRemapper
 
 class RescaleImageProcessor(
     width: Int,

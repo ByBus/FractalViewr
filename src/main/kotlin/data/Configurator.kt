@@ -1,5 +1,8 @@
-package domain
+package data
 
+import domain.FractalFamilyRepository
+import domain.FractalSpaceState
+import domain.FractalType
 import domain.imageprocessing.Configurable
 
 class Configurator(
@@ -18,11 +21,6 @@ class Configurator(
         }
         fractalManager.setConfiguration(fractal, state)
     }
-}
-
-interface FractalType {
-    fun title(): String
-    fun hasFamilyOfFractals(): Boolean
 }
 
 enum class MainFractals(private val title: String, private val family: Boolean = false) : FractalType {

@@ -1,12 +1,11 @@
-package data.factory
+package data.fractal.factory
 
 import Localization
 import data.fractal.Julia
 import data.fractal.JuliaCubic
-import domain.ConcreteFactory
 import domain.Fractal
 import domain.FractalType
-import domain.JuliaFamily
+import data.JuliaFamily
 
 class JuliaFamilyFactory(override val familyName: String = Localization.juliaConstant) : ConcreteFactory<JuliaFamily> {
     override fun create(type: JuliaFamily): Fractal {
