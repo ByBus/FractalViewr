@@ -7,6 +7,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import di.gradientMakerModule
+import di.imageProcessorsModule
 import di.mainModule
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
@@ -15,7 +16,7 @@ import ui.AppIcon
 
 fun main() {
     startKoin {
-        modules(gradientMakerModule, mainModule)
+        modules(gradientMakerModule, mainModule, imageProcessorsModule)
     }
     application {
         Window(

@@ -60,6 +60,13 @@ val mainModule = module(createdAtStart = true) {
 
     factoryOf(::FractalFamilyFactoryMaker) { bind<FactoryMaker<FractalType>>() }
 
+    factoryOf(::FileSaveDialogController)
+
+    factoryOf(::FractalDatasource) { bind<ReadSingleDataSource<FractalType, Fractal>>() }
+    factoryOf(::FractalRepository) { bind<FractalFamilyRepository>() }
+}
+
+val imageProcessorsModule = module {
     factory<FractalImageProcessor>(named("final_image")) {
         FinalImageProcessor(
             width = 1000,
@@ -86,13 +93,7 @@ val mainModule = module(createdAtStart = true) {
             get()
         )
     }
-
-    factoryOf(::FileSaveDialogController)
-
-    factoryOf(::FractalDatasource) { bind<ReadSingleDataSource<FractalType, Fractal>>() }
-    factoryOf(::FractalRepository) { bind<FractalFamilyRepository>() }
 }
-
 
 val gradientMakerModule = module {
     factoryOf(::ColorPickerController)
