@@ -2,7 +2,7 @@ package data.fractal.factory
 
 import Localization
 import domain.FractalType
-import data.NewtonFamily
+import domain.NewtonFamily
 import data.fractal.Newton
 import data.fractal.newtonfunction.*
 import domain.*

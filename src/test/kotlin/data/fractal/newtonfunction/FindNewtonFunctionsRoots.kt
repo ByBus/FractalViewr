@@ -3,7 +3,7 @@ package data.fractal.newtonfunction
 import data.fractal.Complex
 import data.fractal.NewtonFunction
 import org.junit.Test
-import domain.IntDoubleReMapper
+import domain.RangeRemapper
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.test.assertNotEquals
@@ -11,7 +11,7 @@ import kotlin.test.assertNotEquals
 class FindNewtonFunctionsRoots {
     private val rootsHeader = "-${"=".repeat(25)}ROOTS${"=".repeat(25)}-"
     private val TOLERANCE = 10.0.pow(-6.0)
-    private val remapper = IntDoubleReMapper()
+    private val remapper = RangeRemapper.IntDoubleReMapper()
 
     @Test
     fun `find ZCubeMinus2ZPlus2 Roots`(){

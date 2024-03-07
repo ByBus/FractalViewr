@@ -5,7 +5,7 @@ import data.fractal.Julia
 import data.fractal.JuliaCubic
 import domain.Fractal
 import domain.FractalType
-import data.JuliaFamily
+import domain.JuliaFamily
 
 class JuliaFamilyFactory(override val familyName: String = Localization.juliaConstant) : ConcreteFactory<JuliaFamily> {
     override fun create(type: JuliaFamily): Fractal {

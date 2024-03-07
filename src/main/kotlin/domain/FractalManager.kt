@@ -16,17 +16,16 @@ private const val HEIGHT = 1000
 
 typealias BiMapper<Double> = (Double, Double) -> Double
 typealias BiMapperPair<Double> = (Double, Double) -> Pair<Double, Double>
-typealias CanvasSpaceStateHolder = StateRepository<FractalSpaceState<Double>>
+typealias State = FractalSpaceState<Double>
 
 class FractalManager(
     private val screenMapper: RangeRemapper<Int, Double>,
     private val palette: Palette<Int>,
     private val gradientRepository: CrudRepository<GradientData>,
-    private val fractalRepository: FractalFamilyRepository,
     private val finalImageProcessor: FractalImageProcessor,
     private val previewImageProcessor: FractalImageProcessor,
-    private var configuration: Configuration
-) : Configurable<FractalSpaceState<Double>>, ConfigurationProvider<CanvasSpaceStateHolder> {
+    private var configuration: Configuration<State>
+) : Configurable<State>, ConfigurationProvider<State> {
     private var job: Job = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -34,20 +33,18 @@ class FractalManager(
     val image = _image.asStateFlow()
     val gradients = gradientRepository.gradients
 
-    private val _fractalFamily = MutableStateFlow(FractalFamilyUiState())
+    private val _fractalFamily = MutableStateFlow(configuration.fractalFamilyState)
     val fractalFamily = _fractalFamily.asStateFlow()
 
     init {
-        previewImageProcessor.setConfiguration(configuration.fractal, configuration.canvasStateHolder)
-        finalImageProcessor.setConfiguration(configuration.fractal, configuration.canvasStateHolder)
+        previewImageProcessor.setConfiguration(configuration)
+        finalImageProcessor.setConfiguration(configuration)
         subscribeToPreview()
         subscribeToFinalImage()
         setGradient(gradients.value[0].colorStops)
     }
 
-    private fun stopImageComputation() {
-        job.cancel()
-    }
+    private fun stopImageComputation() = job.cancel()
 
      private fun subscribeToPreview() {
         coroutineScope.launch {
@@ -66,27 +63,18 @@ class FractalManager(
         }
     }
 
-    private fun updateFromPreview() {
+    private fun updateFromPreview() =
         finalImageProcessor.update(previewImageProcessor.image.value)
-    }
-
-    fun setFractalFamilyOf(fractalType: FractalType) {
-        if (fractalType.hasFamilyOfFractals()) {
-            _fractalFamily.value = FractalFamilyUiState(
-                fractalRepository.familyFractalTypes(fractalType).toList(),
-                fractalRepository.familyName(fractalType)
-            )
-        }
-    }
 
     fun setScroll(direction: Float, x: Int, y: Int) {
         stopImageComputation()
-        val state = configuration.canvasStateHolder.state()
+        val state = configuration.state()
         val xMapper: BiMapper<Double> = axisMapper(x, 0, WIDTH)
         val yMapper: BiMapper<Double> = axisMapper(y, 0, HEIGHT)
         val x0 = state.mapAxis(xMapper, true)
         val y0 = state.mapAxis(yMapper, false)
-        configuration.save(state.scaledNear(direction, x0, y0))
+        val newState = state.scaledNear(direction, x0, y0)
+        configuration.save(newState)
         computePreviewAndThenImage()
     }
 
@@ -144,9 +132,8 @@ class FractalManager(
         }
     }
 
-    fun saveGradient(name: String, colors: List<Pair<Float, Int>>) {
+    fun saveGradient(name: String, colors: List<Pair<Float, Int>>) =
         gradientRepository.save(GradientData(name, colors))
-    }
 
     fun undo() {
         configuration.removeLast()
@@ -158,23 +145,21 @@ class FractalManager(
         computeImage(false)
     }
 
-    override fun setConfiguration(fractal: Fractal, state: FractalSpaceState<Double>) {
-        configuration = configuration.copyWith(fractal, state)
-        finalImageProcessor.setConfiguration(fractal, configuration)
-        previewImageProcessor.setConfiguration(fractal, configuration)
+    override fun setConfiguration(configuration: Configuration<State>) {
+        _fractalFamily.value = configuration.fractalFamilyState
+        this.configuration = configuration
+        finalImageProcessor.setConfiguration(configuration)
+        previewImageProcessor.setConfiguration(configuration)
         computePreviewAndThenImage()
     }
 
-    fun delete(gradient: GradientData) {
-        gradientRepository.delete(gradient)
-    }
+    fun delete(gradient: GradientData) = gradientRepository.delete(gradient)
 
-    fun editGradient(id: Int, name: String, colors: List<Pair<Float, Int>>) {
+    fun editGradient(id: Int, name: String, colors: List<Pair<Float, Int>>) =
         gradientRepository.edit(GradientData(name, colors, id))
-    }
 
-    override fun provideState(stateConsumer: (fractal: Fractal, state: CanvasSpaceStateHolder) -> Unit) {
-        stateConsumer.invoke(configuration.fractal, configuration.canvasStateHolder)
+    override fun provideConfig(configConsumer: (config: Configuration<State>) -> Unit) {
+        configConsumer.invoke(configuration)
     }
 }
 

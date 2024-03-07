@@ -1,11 +1,9 @@
-package data
+package domain
 
-import domain.FractalSpaceState
-import domain.StateRepositoryCreatable
 import java.util.*
 
-class CanvasStateRepository (private var initialState: FractalSpaceState<Double>) :
-    StateRepositoryCreatable<FractalSpaceState<Double>> {
+class CanvasStateStack (private var initialState: FractalSpaceState<Double>) :
+    StateHolder<FractalSpaceState<Double>> {
     private val states = ArrayDeque<FractalSpaceState<Double>>(100)
 
     override fun state(): FractalSpaceState<Double> {
@@ -24,9 +22,5 @@ class CanvasStateRepository (private var initialState: FractalSpaceState<Double>
 
     override fun removeLast() {
         states.poll()
-    }
-
-    override fun createWithState(state: FractalSpaceState<Double>): StateRepositoryCreatable<FractalSpaceState<Double>> {
-        return CanvasStateRepository(state)
     }
 }

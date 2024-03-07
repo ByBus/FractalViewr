@@ -1,32 +1,27 @@
 package domain.imageprocessing
 
-import domain.StateRepository
-import domain.BiMapper
-import domain.Fractal
-import domain.FractalSpaceState
+import domain.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
-import domain.Palette
-import domain.RangeRemapper
 import java.awt.image.BufferedImage
 
-typealias FractalSpaceStateHolder = StateRepository<FractalSpaceState<Double>>
+typealias State = FractalSpaceState<Double>
 
 abstract class FractalImageProcessor(
     val width: Int,
     val height: Int,
     private val screenMapper: RangeRemapper<Int, Double>,
     private val palette: Palette<Int>,
-) : ImageProcessor, Configurable<FractalSpaceStateHolder> {
+) : ImageProcessor, Configurable<State> {
     protected val buffer = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
     private val mutableImage = MutableStateFlow(BufferedImageWrapper(buffer, true))
     val image = mutableImage.asStateFlow()
 
     protected lateinit var fractal: Fractal
-    private lateinit var canvasStateHolder: FractalSpaceStateHolder
+    private lateinit var canvasStateHolder: StateHolder<State>
 
     open fun update(imageWrapper: BufferedImageWrapper) {
         mutableImage.value = imageWrapper.upscale(width, height)
@@ -34,8 +29,7 @@ abstract class FractalImageProcessor(
 
     override suspend fun computeImage() {
         withContext(Dispatchers.Default) {
-            val state = canvasStateHolder.state()
-            computation(state)
+            computation(canvasStateHolder.state())
         }
     }
 
@@ -45,9 +39,9 @@ abstract class FractalImageProcessor(
 
     abstract fun CoroutineScope.computation(state: FractalSpaceState<Double>)
 
-    override fun setConfiguration(fractal: Fractal, state: FractalSpaceStateHolder) {
-        this.fractal = fractal
-        this.canvasStateHolder = state
+    override fun setConfiguration(configuration: Configuration<State>) {
+        this.fractal = configuration.fractal
+        this.canvasStateHolder = configuration.canvasStateHistoryStack
     }
 
     protected fun computePixel(

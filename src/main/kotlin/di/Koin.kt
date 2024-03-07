@@ -2,6 +2,7 @@ package di
 
 
 import data.*
+import domain.CanvasState
 import data.fractal.Mandelbrot
 import data.local.ExposedGradients
 import data.local.exposed.DAO
@@ -16,6 +17,7 @@ import domain.imageprocessing.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -29,18 +31,24 @@ import java.awt.image.BufferedImage
 
 val mainModule = module(createdAtStart = true) {
     single {
-        FractalManager(
-            get(), get(), get(), get(),
+        FractalManager(get(), get(), get(),
             finalImageProcessor = get(named("final_image")),
             previewImageProcessor = get(named("preview_image")),
-            configuration = get(named("initial_config"))
-        )
+            configuration = get {
+                parametersOf(
+                    Mandelbrot(),
+                    CanvasState(-2.0, 1.0, -1.5, 1.5),
+                    emptyList<FractalType>(),
+                    ""
+                )
+            })
     }.binds(arrayOf(FractalManager::class, ConfigurationProvider::class, Configurable::class))
 
-    factory(named("initial_config")) {
-        Configuration(
-            Mandelbrot(),
-            CanvasStateRepository(CanvasState(-2.0, 1.0, -1.5, 1.5))
+    factory<Configuration<FractalSpaceState<Double>>> { params ->
+        FractalManagerConfiguration(
+            fractal = params.get(),
+            CanvasStateStack(initialState = params.get()),
+            FractalFamilyState(types = params.get(), name = params.get())
         )
     }
 
@@ -56,7 +64,7 @@ val mainModule = module(createdAtStart = true) {
 
     factory<FileSaver<BufferedImage>> { ImageSaver() }
 
-    singleOf(::Configurator)
+    single<Configurator> { Configurator.Base(get(), get()) }
 
     factoryOf(::FractalFamilyFactoryMaker) { bind<FactoryMaker<FractalType>>() }
 
@@ -69,28 +77,19 @@ val mainModule = module(createdAtStart = true) {
 val imageProcessorsModule = module {
     factory<FractalImageProcessor>(named("final_image")) {
         FinalImageProcessor(
-            width = 1000,
-            height = 1000,
-            get(),
-            get()
+            width = 1000, height = 1000, get(), get()
         )
     }
 
     factory<FractalImageProcessor>(named("preview_image")) {
         PreviewProcessor(
-            width = 200,
-            height = 200,
-            get(),
-            get()
+            width = 200, height = 200, get(), get()
         )
     }
 
     factory<FractalImageProcessor>(named("rescale_image_save_dialog")) { params ->
         RescaleImageProcessor(
-            params.get(),
-            params.get(),
-            get(),
-            get()
+            params.get(), params.get(), get(), get()
         )
     }
 }

@@ -25,9 +25,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import data.Configurator
-import domain.FractalType
-import data.MainFractals
 import domain.GradientData
 import domain.*
 import org.koin.java.KoinJavaComponent.getKoin
@@ -42,7 +39,7 @@ fun App(
 ) {
     FractalTheme {
         val defaultName = Localization.gradientDefaultName
-        var currentFractal: FractalType by remember { mutableStateOf(MainFractals.MANDELBROT) }
+        var currentFractal: FractalType by remember { mutableStateOf(configurator.initialType) }
         var editDialogConfig by remember { mutableStateOf(GradientDialogConfig(name = defaultName)) }
 
         val fractalFamily by fractalManager.fractalFamily.collectAsState()
@@ -67,14 +64,13 @@ fun App(
             Column(modifier = Modifier) {
                 ToolBar(fractalManager, switchToCreateMode = { editDialogConfig = editDialogConfig.create() })
                 DropdownMenuSelector(
-                    items = MainFractals.values().map { it.title().uppercase() },
+                    items = currentFractal.familyTypes().map { it.title().uppercase() },
                     label = Localization.fractalSelectorTitle
                 ) {
-                    currentFractal = MainFractals.values()[it]
+                    currentFractal = currentFractal.familyTypes()[it]
                     configurator.changeConfiguration(currentFractal)
-                    fractalManager.setFractalFamilyOf(currentFractal)
                 }
-                AppearanceAnimated(currentFractal.hasFamilyOfFractals()) {
+                AppearanceAnimated(currentFractal.hasFamilyOfFractals) {
                     DropdownMenuSelector(
                         items = fractalFamily.types.map { it.title() },
                         label = fractalFamily.name,

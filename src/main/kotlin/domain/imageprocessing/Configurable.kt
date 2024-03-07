@@ -1,7 +1,7 @@
 package domain.imageprocessing
 
-import domain.Fractal
+import domain.Configuration
 
 interface Configurable<T> {
-    fun setConfiguration(fractal: Fractal, state: T)
+    fun setConfiguration(configuration: Configuration<T>)
 }

@@ -1,12 +1,12 @@
 package presenter
 
-import domain.IntDoubleReMapper
+import domain.RangeRemapper
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class IntDoubleReMapperTest {
 
-    val mapper = IntDoubleReMapper()
+    val mapper = RangeRemapper.IntDoubleReMapper()
 
     @Test
     fun reMapWidth() {

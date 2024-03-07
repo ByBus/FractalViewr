@@ -1,8 +1,8 @@
 package data.fractal.factory
 
 import domain.FractalType
-import data.MainFractals
-import data.NewtonFamily
+import domain.MainFractals
+import domain.NewtonFamily
 
 class FractalFamilyFactoryMaker : FactoryMaker<FractalType> {
     override fun defaultFactory() = JuliaFamilyFactory()

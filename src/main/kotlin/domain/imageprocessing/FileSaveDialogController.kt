@@ -1,6 +1,5 @@
 package domain.imageprocessing
 
-import domain.StateRepository
 import domain.FileSaver
 import domain.FractalSpaceState
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +15,7 @@ import java.awt.image.BufferedImage
 import java.io.File
 
 class FileSaveDialogController(
-    private val configurationProvider: ConfigurationProvider<StateRepository<FractalSpaceState<Double>>>,
+    private val configurationProvider: ConfigurationProvider<FractalSpaceState<Double>>,
     private val imageFileSaver: FileSaver<BufferedImage>,
 ) {
     private var job: Job? = null
@@ -41,8 +40,8 @@ class FileSaveDialogController(
                 qualifier = named("rescale_image_save_dialog"),
                 parameters = { parametersOf(width, height) }
             )
-        configurationProvider.provideState { fractal, stateHolder ->
-            imageProcessor.setConfiguration(fractal, stateHolder)
+        configurationProvider.provideConfig { configuration ->
+            imageProcessor.setConfiguration(configuration)
         }
     }
 
